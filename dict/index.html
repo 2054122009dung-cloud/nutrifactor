@@ -134,18 +134,83 @@
             border-radius: 8px;
             transition: width 0.5s ease-in-out, background-color 0.5s;
         }
+        /* Hiệu ứng Glassmorphism nâng cao cho nút điều hướng */
+.nav-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    background: rgba(15, 23, 42, 0.6); /* Nền tối trong suốt */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-switcher:hover {
+    background: rgba(16, 185, 129, 0.15); /* Màu xanh lục nhạt khi hover */
+    border-color: rgba(16, 185, 129, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(16, 185, 129, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-switcher .icon-box {
+    width: 38px;
+    height: 38px;
+    background: rgba(16, 185, 129, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-center: center;
+    color: #10b981;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.nav-switcher:hover .icon-box {
+    transform: rotate(-10deg) scale(1.1);
+}
+
+.nav-switcher .text-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.nav-switcher .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.nav-switcher .brand {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-main);
+}
     </style>
 </head>
 <body>
-            <div class="fixed top-4 right-4 z-50 flex gap-2">
-                    <a href="../index.html" class="flex items-center gap-3 bg-gray-900/80 hover:bg-emerald-500/20 border border-gray-700 hover:border-emerald-500/50 backdrop-blur-md text-gray-400 hover:text-emerald-400 px-4 py-2 rounded-2xl transition-all duration-300 group shadow-2xl">
-                        <i class="fa-solid fa-utensils group-hover:scale-110 transition-transform"></i>
-                        <div class="flex flex-col items-start leading-none">
-                            <span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Quay lại</span>
-                            <span class="font-bold text-sm">NutriFactor</span>
-                        </div>
-                    </a>
-                </div>
+        <a href="../index.html" class="nav-switcher">
+            <div class="icon-box">
+                <i class="fa-solid fa-utensils"></i>
+            </div>
+            <div class="text-content">
+                <span class="label">Switch to</span>
+                <span class="brand">NutriFactor</span>
+            </div>
+            <i class="fa-solid fa-arrow-right-long" style="margin-left: 10px; opacity: 0.5; font-size: 0.8rem;"></i>
+        </a>
 <div class="container">
     <h1>Phân Tích Dinh Dưỡng & Cơ Thể <br> <span style="font-size: 0.6em; color: var(--text-muted); font-weight: normal;">Advanced Body & Nutrition Analysis</span></h1>
     

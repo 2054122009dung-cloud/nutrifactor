@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriMap Ultimate Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --border: #e5e7eb;
+            --progress-bg: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        select, input[type="number"], button {
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        select { flex: 1; min-width: 250px; }
+        input[type="number"] { width: 120px; }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: var(--primary-hover); }
+
+        /* Selected Foods List */
+        .selected-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .food-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .food-tag button {
+            background: none;
+            color: var(--danger);
+            border: none;
+            padding: 0;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .card h3 { margin-bottom: 5px; font-size: 16px; color: var(--text-muted); }
+        .card .val { font-size: 24px; font-weight: bold; color: var(--primary); }
+        .card .warning { color: var(--danger); }
+        .card .good { color: var(--success); }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nutrient-item {
+            margin-bottom: 12px;
+        }
+
+        .nutrient-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .nutrient-name { font-weight: 600; }
+        .nutrient-score { font-weight: bold; color: var(--text-muted); }
+
+        .progress-bar-bg {
+            background-color: var(--progress-bg);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary);
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .progress-bar-fill.maxed {
+            background-color: var(--success);
+        }
+        
+        .progress-bar-fill.danger {
+            background-color: var(--danger);
+        }
+
+        .unit { font-size: 12px; color: var(--text-muted); font-weight: normal;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🥩 NutriMap Ultimate: Phân Tích 360 Độ</h1>
+    
+    <div class="input-section">
+        <select id="foodSelect">
+            <optgroup label="Thịt Gà & Vịt / Poultry">
+                <option value="chicken_breast">Ức gà nạc</option>
+                <option value="chicken_thigh">Má đùi gà</option>
+                <option value="duck_meat">Thịt vịt nạc</option>
+            </optgroup>
+            <optgroup label="Thịt Bò & Heo / Beef & Pork">
+                <option value="beef_lean">Thăn bò & Bắp bò</option>
+                <option value="beef_fatty">Ba chỉ bò</option>
+                <option value="pork_lean">Nạc dăm & Nạc vai heo</option>
+                <option value="pork_fatty">Ba chỉ heo</option>
+            </optgroup>
+            <optgroup label="Nội Tạng / Organ Meats">
+                <option value="liver_beef">Gan bò</option>
+                <option value="liver_pork">Gan heo</option>
+            </optgroup>
+            <optgroup label="Hải Sản / Seafood">
+                <option value="salmon">Cá hồi</option>
+                <option value="oyster">Hàu</option>
+            </optgroup>
+            <optgroup label="Trứng & Sữa / Eggs & Dairy">
+                <option value="duck_egg_whole">Trứng vịt (Nguyên quả)</option>
+                <option value="raw_milk">Sữa thô / Thanh trùng</option>
+            </optgroup>
+        </select>
+        <input type="number" id="foodWeight" placeholder="Gram" value="100" min="1">
+        <button onclick="addFood()">Thêm Vào Khẩu Phần</button>
+    </div>
+
+    <div class="selected-list" id="selectedList"></div>
+
+    <div class="summary-cards">
+        <div class="card">
+            <h3>Tổng Calo</h3>
+            <div class="val" id="sumCal">0 kcal</div>
+        </div>
+        <div class="card">
+            <h3>Protein</h3>
+            <div class="val" id="sumPro">0 g</div>
+        </div>
+        <div class="card">
+            <h3>Fat</h3>
+            <div class="val" id="sumFat">0 g</div>
+        </div>
+        <div class="card">
+            <h3>Tỉ lệ Na:K <span style="font-size: 12px; font-weight: normal; color:#666">(Lý tưởng < 1)</span></h3>
+            <div class="val" id="naKRatio">0.00</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="panel" id="panelEAA">
+            <h2>EAA & Hợp Chất</h2>
+            </div>
+        <div class="panel" id="panelMinerals">
+            <h2>Khoáng Chất (Minerals)</h2>
+            </div>
+        <div class="panel" id="panelVitWater">
+            <h2>Vitamins (Tan trong nước)</h2>
+            </div>
+        <div class="panel" id="panelVitFat">
+            <h2>Vitamins (Tan trong dầu)</h2>
+            </div>
+    </div>
+</div>
+
+<script>
+    // Cơ sở dữ liệu: [cal, pro, fat, creatine, leu, iso, val, lys, thr, phe, met, his, trp, vitA, vitB1, vitB2, vitB3, vitB5, vitB6, vitB7, vitB9, vitB12, vitC, vitD, vitE, vitK, ca, mg, k, na, p, fe, zn, cu, se, mn, iod]
+    const db = {
+        chicken_breast: { name: 'Ức gà nạc', data: [165,31,3.6,400,2300,1200,1400,2600,1300,1200,800,900,300, 21,0.1,0.1,11.2,1,0.6,2,4,0.3,0,0,0.3,0, 15,29,256,45,228,1,1,0.05,27,0.02,2] },
+        chicken_thigh: { name: 'Má đùi gà', data: [209,26,10.9,350,1900,1000,1200,2200,1100,1000,700,800,250, 50,0.1,0.2,6,1.2,0.4,2,5,0.4,0,0,0.3,0, 11,20,200,80,180,1.1,1.5,0.06,20,0.02,2] },
+        duck_meat: { name: 'Thịt vịt nạc', data: [201,23.5,11.2,380,1800,950,1100,2000,1000,950,600,700,200, 60,0.2,0.3,5.1,1.5,0.3,2,6,0.4,0,0,0.7,0, 12,20,252,65,203,2.7,1.9,0.2,14,0.02,2] },
+        beef_lean: { name: 'Thăn bò/Bắp bò', data: [250,26,15,450,2080,1180,1300,2180,1040,1040,670,830,160, 0,0.05,0.2,5.3,0.6,0.4,2,4,2.6,0,4,0.3,1.5, 10,21,318,55,200,2.6,4.8,0.08,14,0.01,1] },
+        beef_fatty: { name: 'Ba chỉ bò', data: [320,18,28,300,1500,850,950,1600,750,750,480,600,120, 0,0.04,0.15,4,0.4,0.3,1.5,3,2,0,2,0.2,1, 8,15,220,60,150,1.9,3.5,0.06,10,0.01,1] },
+        pork_lean: { name: 'Nạc dăm/vai heo', data: [143,26,3.5,400,2100,1200,1350,2300,1150,1050,700,1000,300, 0,0.8,0.3,5.5,0.7,0.5,1.5,0,0.7,0,2,0.1,0, 14,28,421,50,240,1.2,2.5,0.07,35,0.01,2] },
+        pork_fatty: { name: 'Ba chỉ heo', data: [518,9,53,150,700,400,450,750,380,350,230,330,100, 10,0.3,0.1,2,0.2,0.1,0.5,0,0.3,0,1,0.1,0, 5,10,150,30,90,0.5,1,0.03,12,0.01,1] },
+        liver_beef: { name: 'Gan bò', data: [135,20.4,3.6,50,1700,900,1100,1500,850,950,450,550,250, 16898,0.2,2.8,13.2,7.1,1,36,290,59.3,1.3,45,0.4,3, 5,18,313,69,297,4.9,4,9.8,39,0.3,15] },
+        liver_pork: { name: 'Gan heo', data: [134,21.4,4.4,50,1800,950,1200,1600,900,1000,480,600,280, 15306,0.3,2.2,11.8,5.8,0.6,30,212,26,23,0,0.4,0, 8,18,273,87,288,23.3,5.7,0.6,52,0.3,14] },
+        salmon: { name: 'Cá hồi', data: [208,20,13,400,1610,920,1030,1840,870,780,590,590,220, 40,0.2,0.1,8.5,0.9,0.6,5,25,3.2,0,526,1.1,0.1, 9,27,363,59,252,0.3,0.4,0.05,36,0.01,30] },
+        oyster: { name: 'Hàu', data: [81,9.5,2.3,10,700,400,450,750,400,350,220,200,100, 270,0.1,0.2,1.5,0.5,0.1,2,10,16,8,0,0.8,0.1, 62,22,156,211,135,5.1,16.6,1.6,65,0.3,160] },
+        duck_egg_whole: { name: 'Trứng vịt', data: [185,12.8,13.8,10,1110,750,860,930,580,670,410,320,200, 674,0.2,0.4,0.2,1.8,0.2,25,80,5.4,0,48,1.3,0.4, 64,17,222,146,220,3.8,1.4,0.06,31,0.04,50] },
+        raw_milk: { name: 'Sữa thô/Thanh trùng', data: [65,3.2,3.9,5,310,190,220,260,140,150,80,80,40, 140,0.04,0.1,0.1,0.3,0.04,2,5,0.4,1,40,0.1,0.3, 120,10,140,43,93,0.1,0.4,0.01,2,0.01,15] }
+    };
+
+    // Cấu trúc chỉ số
+    const metricsConfig = [
+        // Nhóm EAA & Creatine
+        { idx: 3, name: 'Creatine', target: 5000, unit: 'mg', panel: 'panelEAA' },
+        { idx: 4, name: 'Leucine', target: 3000, unit: 'mg', panel: 'panelEAA' },
+        { idx: 5, name: 'Isoleucine', target: 1500, unit: 'mg', panel: 'panelEAA' },
+        { idx: 6, name: 'Valine', target: 2000, unit: 'mg', panel: 'panelEAA' },
+        { idx: 7, name: 'Lysine', target: 3000, unit: 'mg', panel: 'panelEAA' },
+        { idx: 8, name: 'Threonine', target: 1500, unit: 'mg', panel: 'panelEAA' },
+        { idx: 9, name: 'Phenylalanine', target: 2000, unit: 'mg', panel: 'panelEAA' },
+        { idx: 10, name: 'Methionine', target: 1000, unit: 'mg', panel: 'panelEAA' },
+        { idx: 11, name: 'Histidine', target: 700, unit: 'mg', panel: 'panelEAA' },
+        { idx: 12, name: 'Tryptophan', target: 300, unit: 'mg', panel: 'panelEAA' },
+        
+        // Nhóm Minerals
+        { idx: 26, name: 'Canxi (Ca)', target: 1000, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 27, name: 'Magie (Mg)', target: 420, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 28, name: 'Kali (K)', target: 3500, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 29, name: 'Natri (Na)', target: 2000, unit: 'mg', panel: 'panelMinerals', isInverse: true }, // Logic đặc biệt
+        { idx: 30, name: 'Phốt pho (P)', target: 700, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 31, name: 'Sắt (Fe)', target: 18, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 32, name: 'Kẽm (Zn)', target: 15, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 33, name: 'Đồng (Cu)', target: 1, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 34, name: 'Selen (Se)', target: 55, unit: 'mcg', panel: 'panelMinerals' },
+        { idx: 35, name: 'Mangan (Mn)', target: 2.3, unit: 'mg', panel: 'panelMinerals' },
+        { idx: 36, name: 'I-ốt (I)', target: 150, unit: 'mcg', panel: 'panelMinerals' },
+
+        // Nhóm Vit Tan trong nước
+        { idx: 22, name: 'Vitamin C', target: 100, unit: 'mg', panel: 'panelVitWater' },
+        { idx: 14, name: 'Vitamin B1', target: 1.5, unit: 'mg', panel: 'panelVitWater' },
+        { idx: 15, name: 'Vitamin B2', target: 1.7, unit: 'mg', panel: 'panelVitWater' },
+        { idx: 16, name: 'Vitamin B3', target: 20, unit: 'mg', panel: 'panelVitWater' },
+        { idx: 17, name: 'Vitamin B5', target: 5, unit: 'mg', panel: 'panelVitWater' },
+        { idx: 18, name: 'Vitamin B6', target: 2, unit: 'mg', panel: 'panelVitWater' },
+        { idx: 19, name: 'Vitamin B7 (Biotin)', target: 30, unit: 'mcg', panel: 'panelVitWater' },
+        { idx: 20, name: 'Vitamin B9 (Folate)', target: 400, unit: 'mcg', panel: 'panelVitWater' },
+        { idx: 21, name: 'Vitamin B12', target: 5, unit: 'mcg', panel: 'panelVitWater' },
+
+        // Nhóm Vit Tan trong dầu
+        { idx: 13, name: 'Vitamin A', target: 3000, unit: 'IU', panel: 'panelVitFat' },
+        { idx: 23, name: 'Vitamin D', target: 1000, unit: 'IU', panel: 'panelVitFat' },
+        { idx: 24, name: 'Vitamin E', target: 15, unit: 'mg', panel: 'panelVitFat' },
+        { idx: 25, name: 'Vitamin K', target: 120, unit: 'mcg', panel: 'panelVitFat' },
+    ];
+
+    let currentMeal = [];
+
+    function addFood() {
+        const key = document.getElementById('foodSelect').value;
+        const weight = parseFloat(document.getElementById('foodWeight').value);
+        if (!weight || weight <= 0) return;
+
+        currentMeal.push({ id: Date.now(), key, weight });
+        updateUI();
+    }
+
+    function removeFood(id) {
+        currentMeal = currentMeal.filter(item => item.id !== id);
+        updateUI();
+    }
+
+    function calculateTotal(idx) {
+        return currentMeal.reduce((sum, item) => {
+            const valPer100g = db[item.key].data[idx];
+            return sum + (valPer100g * item.weight / 100);
+        }, 0);
+    }
+
+    function updateUI() {
+        // 1. Update List
+        const listDiv = document.getElementById('selectedList');
+        listDiv.innerHTML = '';
+        currentMeal.forEach(item => {
+            const tag = document.createElement('div');
+            tag.className = 'food-tag';
+            tag.innerHTML = `${db[item.key].name} (${item.weight}g) <button onclick="removeFood(${item.id})">×</button>`;
+            listDiv.appendChild(tag);
+        });
+
+        // 2. Update Summaries
+        const tCal = calculateTotal(0);
+        const tPro = calculateTotal(1);
+        const tFat = calculateTotal(2);
+        const tNa = calculateTotal(29);
+        const tK = calculateTotal(28);
+        const ratio = tK > 0 ? (tNa / tK).toFixed(2) : 0;
+
+        document.getElementById('sumCal').innerText = tCal.toFixed(0) + ' kcal';
+        document.getElementById('sumPro').innerText = tPro.toFixed(1) + ' g';
+        document.getElementById('sumFat').innerText = tFat.toFixed(1) + ' g';
+        
+        const ratioEl = document.getElementById('naKRatio');
+        ratioEl.innerText = ratio;
+        ratioEl.className = `val ${ratio > 1 ? 'warning' : 'good'}`;
+
+        // 3. Update Dashboard Panels
+        const panels = {
+            panelEAA: document.getElementById('panelEAA'),
+            panelMinerals: document.getElementById('panelMinerals'),
+            panelVitWater: document.getElementById('panelVitWater'),
+            panelVitFat: document.getElementById('panelVitFat')
+        };
+
+        // Reset panels content (keep h2)
+        Object.keys(panels).forEach(key => {
+            const h2 = panels[key].querySelector('h2').outerHTML;
+            panels[key].innerHTML = h2;
+        });
+
+        metricsConfig.forEach(m => {
+            const total = calculateTotal(m.idx);
+            let score = 0;
+            let percentage = 0;
+            let barClass = 'progress-bar-fill';
+
+            if (m.isInverse) {
+                // Logic cho Natri
+                if (total <= m.target) {
+                    score = 10;
+                    percentage = (total / m.target) * 100;
+                } else {
+                    score = Math.max(0, 10 - (total - m.target) / 200);
+                    percentage = 100;
+                    barClass += ' danger'; // Đỏ báo hiệu dư thừa muối
+                }
+            } else {
+                // Logic thông thường
+                score = Math.min(10, (total / m.target) * 10);
+                percentage = Math.min(100, (total / m.target) * 100);
+                if (score === 10) barClass += ' maxed';
+            }
+
+            const html = `
+                <div class="nutrient-item">
+                    <div class="nutrient-header">
+                        <span class="nutrient-name">${m.name} <span class="unit">${total.toFixed(1)} / ${m.target} ${m.unit}</span></span>
+                        <span class="nutrient-score" style="color: ${score === 10 ? 'var(--success)' : (m.isInverse && total > m.target ? 'var(--danger)' : 'var(--text-muted)')}">${score.toFixed(1)}/10</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="${barClass}" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+            panels[m.panel].innerHTML += html;
+        });
+    }
+
+    // Init empty UI
+    updateUI();
+</script>
+
+</body>
+</html>

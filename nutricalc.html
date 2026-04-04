@@ -240,9 +240,11 @@
             padding: 12px;
             background: rgba(0,0,0,0.2);
             border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 15px;
             color: #cbd5e1;
+                line-height: 1.6;
+        }
         }
         .eval-list li strong { color: var(--text-main); }
         .eval-list .danger-text strong { color: var(--danger); }
@@ -429,18 +431,61 @@
         { idx: 25, name: 'Vitamin K', target: 120, unit: 'mcg', panel: 'panelVitFat' },
     ];
 
-    const healthConsequences = {
-        'Creatine': 'Giảm khả năng bộc phát năng lượng ATP, cơ bắp phục hồi chậm.',
-        'Leucine': 'Mất đi tín hiệu bật công tắc (mTOR) tổng hợp và xây dựng cơ bắp.',
-        'Tryptophan': 'Khó ngủ, tinh thần căng thẳng do thiếu Serotonin.',
-        'Canxi (Ca)': 'Mật độ xương giảm, dễ gặp tình trạng chuột rút.',
-        'Magie (Mg)': 'Khó ngủ sâu, cơ bắp căng cứng, dễ bị stress.',
-        'Kali (K)': 'Cơ thể tích nước ngầm, dễ tăng huyết áp, mệt mỏi.',
-        'Sắt (Fe)': 'Gây thiếu máu, cơ bắp không đủ oxy để duy trì sức bền.',
-        'Kẽm (Zn)': 'Suy giảm hệ miễn dịch, làm giảm sản sinh Testosterone.',
-        'Vitamin B12': 'Mệt mỏi mãn tính, thiếu hụt năng lượng hoạt động.',
-        'Vitamin D': 'Khó hấp thụ Canxi, suy giảm hoocmon và hệ xương.',
-        'Vitamin C': 'Phục hồi mô kém, hệ miễn dịch yếu, dễ ốm vặt.'
+const healthConsequences = {
+        'Creatine': 
+            'Giảm khả năng bộc phát năng lượng ATP, cơ bắp phục hồi chậm, giảm sức mạnh và sự minh mẫn thần kinh. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Tinh bột (Carb) hoặc Natri (Na) để tăng insulin, đẩy nhanh hấp thu vào tế bào cơ. ' +
+            '<br>🇬🇧 <i>EN: Decreases ATP burst energy capacity, slows muscle recovery, reduces strength and cognitive function. Combine with: Carbs or Sodium to enhance cellular uptake.</i>',
+            
+        'Leucine': 
+            'Mất đi tín hiệu bật công tắc (mTOR) tổng hợp và xây dựng cơ bắp, dễ bị dị hóa (mất cơ) khi cắt giảm calo. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Các EAA khác (đặc biệt Isoleucine và Valine) để tạo thành chuỗi protein hoàn chỉnh. ' +
+            '<br>🇬🇧 <i>EN: Loses the signal to activate mTOR for muscle protein synthesis, prone to muscle loss. Combine with: Other EAAs for complete protein chains.</i>',
+            
+        'Tryptophan': 
+            'Thiếu hụt Serotonin và Melatonin gây khó ngủ, tinh thần căng thẳng, dễ lo âu và trầm cảm. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Vitamin B6 (giúp chuyển hóa thành Serotonin) và một ít Carb (giúp vượt qua hàng rào máu não). ' +
+            '<br>🇬🇧 <i>EN: Lack of Serotonin/Melatonin causes insomnia, mental stress, and anxiety. Combine with: Vitamin B6 and Carbs.</i>',
+            
+        'Canxi (Ca)': 
+            'Mật độ xương giảm, dễ loãng xương, gây ra tình trạng chuột rút cơ bắp và rối loạn nhịp tim. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Vitamin D3 (để hấp thu qua ruột) và Vitamin K2 (để dẫn Canxi thẳng vào xương, tránh vôi hóa mạch máu). ' +
+            '<br>🇬🇧 <i>EN: Decreased bone density, muscle cramps, and arrhythmias. Combine with: Vitamin D3 (absorption) and Vitamin K2 (routing to bones).</i>',
+            
+        'Magie (Mg)': 
+            'Khó ngủ sâu, cơ bắp căng cứng, hệ thần kinh dễ bị kích thích (stress), mệt mỏi vô cớ. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Kẽm (Zn) và Vitamin B6 (Tổ hợp ZMA) để tối ưu hóa phục hồi thần kinh và cải thiện giấc ngủ. ' +
+            '<br>🇬🇧 <i>EN: Poor deep sleep, muscle stiffness, easily overstimulated nervous system. Combine with: Zinc and Vitamin B6 (ZMA combo).</i>',
+            
+        'Kali (K)': 
+            'Cơ thể tích nước ngầm, dễ tăng huyết áp, nhịp tim bất thường, mệt mỏi và yếu cơ. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Luôn giữ tỷ lệ cân bằng với Natri (K > Na) để tối ưu hóa điện giải và bơm máu. ' +
+            '<br>🇬🇧 <i>EN: Water retention, high blood pressure, fatigue, and muscle weakness. Combine with: Keep a healthy ratio with Sodium (K > Na).</i>',
+            
+        'Sắt (Fe)': 
+            'Gây thiếu máu (hồng cầu nhỏ), cơ thể và cơ bắp không đủ oxy để duy trì sức bền, da xanh xao. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Vitamin C để tăng cường hấp thu tối đa (đặc biệt sắt thực vật). Tránh dùng cùng lúc với Canxi. ' +
+            '<br>🇬🇧 <i>EN: Causes anemia, lack of oxygen for physical endurance, paleness. Combine with: Vitamin C to boost absorption. Avoid taking with Calcium.</i>',
+            
+        'Kẽm (Zn)': 
+            'Suy giảm hệ miễn dịch, làm giảm hoocmon nam (Testosterone), vết thương lâu lành, giảm vị giác. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Magie (hỗ trợ phục hồi) hoặc Vitamin C (tăng đề kháng). Tránh dùng chung với Sắt/Đồng liều cao. ' +
+            '<br>🇬🇧 <i>EN: Weakened immune system, decreased Testosterone, slow wound healing. Combine with: Magnesium or Vitamin C. Avoid simultaneous high Iron/Copper.</i>',
+            
+        'Vitamin B12': 
+            'Mệt mỏi mãn tính, sương mù não (brain fog), tổn thương thần kinh, thiếu hụt năng lượng hoạt động. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Vitamin B9 (Folate) để hỗ trợ quá trình tạo máu và tổng hợp DNA. ' +
+            '<br>🇬🇧 <i>EN: Chronic fatigue, brain fog, nerve damage, lack of energy. Combine with: Vitamin B9 (Folate) to support hematopoiesis.</i>',
+            
+        'Vitamin D': 
+            'Khó hấp thụ Canxi, hệ xương yếu, suy giảm hoocmon sinh dục, dễ mắc bệnh tự miễn và trầm cảm. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Nguồn chất béo tốt (vì D tan trong dầu), Canxi và Magie để kích hoạt chuyển hóa. ' +
+            '<br>🇬🇧 <i>EN: Poor Calcium absorption, weak bones, hormonal decline, depressed mood. Combine with: Dietary fats (fat-soluble), Calcium, and Magnesium.</i>',
+            
+        'Vitamin C': 
+            'Phục hồi mô kém, hệ miễn dịch yếu, dễ ốm vặt, chảy máu chân răng, quá trình lão hóa diễn ra nhanh. ' +
+            '<br>💡 <b>Nên kết hợp:</b> Thực phẩm giàu Sắt (tăng hấp thu) và Vitamin E (tạo thành bộ đôi chống oxy hóa bảo vệ màng tế bào). ' +
+            '<br>🇬🇧 <i>EN: Poor tissue recovery, weak immune system, bleeding gums, rapid aging. Combine with: Iron (enhances absorption) and Vitamin E (antioxidant duo).</i>'
     };
 
     let currentMeal = [];

@@ -1,17 +1,27 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriMap Ultimate - Phân Tích Vi Chất Toàn Diện</title>
+    <title>NutriMap Ultimate - Comprehensive Micronutrient Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Tùy chỉnh thanh cuộn cho đẹp */
+        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #111827; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
+        
+        /* Remove arrows from number input */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-4 md:p-8 flex justify-center">
@@ -20,51 +30,51 @@
         
         <div class="lg:col-span-4 flex flex-col gap-6">
             <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl flex flex-col items-center">
-                <h2 class="text-xl font-bold text-emerald-400 mb-4 w-full"><i class="fa-solid fa-ruler-combined mr-2"></i> Không gian Thực tế</h2>
+                <h2 class="text-xl font-bold text-emerald-400 mb-4 w-full"><i class="fa-solid fa-ruler-combined mr-2"></i> Physical Dimensions</h2>
                 
                 <div class="w-full h-56 bg-gray-950 rounded-xl border-2 border-dashed border-gray-700 flex items-center justify-center relative overflow-hidden mb-6">
-                    <span class="absolute top-2 left-2 text-xs text-gray-500">Mặt cắt từ trên xuống</span>
+                    <span class="absolute top-2 left-2 text-xs text-gray-500">Top-down cross-section</span>
                     <div id="meat-box" class="bg-red-900/80 border-2 border-red-500 rounded-md transition-all duration-300 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-                        <span class="text-red-200 font-bold text-sm drop-shadow-md">Thịt/Trứng</span>
+                        <span class="text-red-200 font-bold text-sm drop-shadow-md">Meat/Egg</span>
                     </div>
                 </div>
 
                 <div class="w-full space-y-4">
                     <div>
-                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Chiều dài (<span id="val-length" class="text-white font-bold">12</span> cm)</label></div>
+                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Length (<span id="val-length" class="text-white font-bold">12</span> cm)</label></div>
                         <input type="range" id="input-length" min="5" max="30" step="0.5" value="12" class="w-full accent-emerald-500">
                     </div>
                     <div>
-                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Chiều rộng (<span id="val-width" class="text-white font-bold">8</span> cm)</label></div>
+                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Width (<span id="val-width" class="text-white font-bold">8</span> cm)</label></div>
                         <input type="range" id="input-width" min="4" max="25" step="0.5" value="8" class="w-full accent-emerald-500">
                     </div>
                     <div>
-                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Độ dày (<span id="val-thick" class="text-white font-bold">2</span> cm)</label></div>
+                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Thickness (<span id="val-thick" class="text-white font-bold">2</span> cm)</label></div>
                         <input type="range" id="input-thick" min="0.5" max="6" step="0.5" value="2" class="w-full accent-emerald-500">
                     </div>
                 </div>
             </div>
 
             <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
-                <h2 class="text-md font-bold mb-3 flex items-center"><i class="fa-solid fa-spoon text-orange-400 mr-2"></i> Tùy chỉnh Nêm nếm</h2>
+                <h2 class="text-md font-bold mb-3 flex items-center"><i class="fa-solid fa-spoon text-orange-400 mr-2"></i> Seasoning Customization</h2>
                 <div class="space-y-4">
                     <div>
-                        <label class="text-xs text-gray-400 block mb-1">Cơ sở dữ liệu Thực phẩm</label>
+                        <label class="text-xs text-gray-400 block mb-1">Food Database</label>
                         <select id="input-meat" class="w-full bg-gray-950 border border-gray-700 rounded-xl p-2 text-sm text-white outline-none focus:border-emerald-500">
-                        </select>
+                            </select>
                     </div>
                     <div>
-                        <label class="text-xs text-gray-400 block mb-1">Loại Sốt (Nền)</label>
+                        <label class="text-xs text-gray-400 block mb-1">Sauce Type (Base)</label>
                         <select id="input-sauce" class="w-full bg-gray-950 border border-gray-700 rounded-xl p-2 text-sm text-white outline-none focus:border-emerald-500">
-                        </select>
+                            </select>
                     </div>
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <label class="text-xs text-gray-400">Rắc thêm Muối (NaCl)</label>
+                            <label class="text-xs text-gray-400">Add Salt (NaCl)</label>
                             <span class="text-yellow-400 font-bold"><span id="val-salt">0</span> g</span>
                         </div>
                         <input type="range" id="input-salt" min="0" max="5" step="0.25" value="0" class="w-full accent-yellow-500">
-                        <p class="text-[10px] text-gray-500 mt-1">1g muối ~ 390mg Natri</p>
+                        <p class="text-[10px] text-gray-500 mt-1">1g salt ~ 390mg Sodium</p>
                     </div>
                 </div>
             </div>
@@ -74,16 +84,19 @@
             
             <div class="flex flex-wrap justify-between items-end border-b border-gray-800 pb-4 mb-4 gap-4 sticky top-0 bg-gray-950/90 backdrop-blur-sm z-10 pt-2">
                 <div>
-                    <p class="text-sm text-gray-400">Khối lượng (W = V × 1.05)</p>
-                    <p class="text-4xl font-black text-white"><span id="res-weight">0</span> <span class="text-xl font-normal text-gray-500">g</span></p>
+                    <label for="input-weight" class="text-sm text-gray-400 block mb-1">Weight (Auto or Manual Input)</label>
+                    <div class="flex items-baseline gap-1">
+                        <input type="number" id="input-weight" placeholder="0" class="bg-gray-900 border-b-2 border-emerald-500 focus:border-emerald-400 text-4xl font-black text-white w-28 outline-none p-1 rounded-t transition-colors" value="0" min="0">
+                        <span class="text-xl font-normal text-gray-500">g</span>
+                    </div>
                 </div>
                 <div class="flex gap-4">
                     <div class="text-center bg-gray-900/80 p-2 px-4 rounded-xl border border-gray-800">
-                        <p class="text-xs text-gray-400 mb-1">Tổng Calo</p>
+                        <p class="text-xs text-gray-400 mb-1">Total Calories</p>
                         <p class="text-2xl font-black text-orange-400"><span id="res-cal">0</span></p>
                     </div>
                     <div class="text-center bg-blue-900/30 p-2 px-4 rounded-xl border border-blue-900/50">
-                        <p class="text-xs text-blue-400 mb-1">Tỉ lệ K : Na</p>
+                        <p class="text-xs text-blue-400 mb-1">K : Na Ratio</p>
                         <p class="text-2xl font-black text-blue-300"><span id="res-kna-ratio">0</span></p>
                     </div>
                 </div>
@@ -109,22 +122,22 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
-                    <h3 class="text-sm font-bold text-emerald-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-gem mr-2"></i>Khoáng chất (Minerals)</h3>
+                    <h3 class="text-sm font-bold text-emerald-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-gem mr-2"></i>Minerals</h3>
                     <div class="space-y-1 text-[13px]">
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Natri (Na)</span> <span class="font-semibold text-yellow-400"><span id="res-sodium">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Kali (K)</span> <span class="font-semibold text-blue-400"><span id="res-potassium">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Sắt (Fe)</span> <span class="font-semibold"><span id="res-iron">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Kẽm (Zn)</span> <span class="font-semibold"><span id="res-zinc">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Magie (Mg)</span> <span class="font-semibold"><span id="res-magnesium">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Canxi (Ca)</span> <span class="font-semibold"><span id="res-calcium">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Phốt pho (P)</span> <span class="font-semibold"><span id="res-phosphorus">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Đồng (Cu)</span> <span class="font-semibold"><span id="res-copper">0</span> mg</span></div>
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Selen (Se)</span> <span class="font-semibold"><span id="res-selenium">0</span> mcg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Sodium (Na)</span> <span class="font-semibold text-yellow-400"><span id="res-sodium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Potassium (K)</span> <span class="font-semibold text-blue-400"><span id="res-potassium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Iron (Fe)</span> <span class="font-semibold"><span id="res-iron">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Zinc (Zn)</span> <span class="font-semibold"><span id="res-zinc">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Magnesium (Mg)</span> <span class="font-semibold"><span id="res-magnesium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Calcium (Ca)</span> <span class="font-semibold"><span id="res-calcium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Phosphorus (P)</span> <span class="font-semibold"><span id="res-phosphorus">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Copper (Cu)</span> <span class="font-semibold"><span id="res-copper">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Selenium (Se)</span> <span class="font-semibold"><span id="res-selenium">0</span> mcg</span></div>
                     </div>
                 </div>
 
                 <div>
-                    <h3 class="text-sm font-bold text-orange-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-capsules mr-2"></i>Vitamin</h3>
+                    <h3 class="text-sm font-bold text-orange-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-capsules mr-2"></i>Vitamins</h3>
                     <div class="space-y-1 text-[13px]">
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Vitamin A</span> <span class="font-semibold"><span id="res-vita">0</span> IU</span></div>
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Vitamin C</span> <span class="font-semibold"><span id="res-vitc">0</span> mg</span></div>
@@ -141,7 +154,7 @@
                 </div>
 
                 <div>
-                    <h3 class="text-sm font-bold text-pink-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-bolt mr-2"></i>Hợp chất & Phụ trợ</h3>
+                    <h3 class="text-sm font-bold text-pink-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-bolt mr-2"></i>Compounds & Supplements</h3>
                     <div class="space-y-1 text-[13px]">
                         <div class="flex justify-between bg-gray-800/30 p-1.5 rounded border border-gray-800/50">
                             <span class="text-gray-400">Creatine</span> 
@@ -161,18 +174,18 @@
 
             <div class="border-t border-gray-800 pt-4">
                 <h3 class="text-sm font-bold text-blue-400 mb-4 flex justify-between items-end">
-                    <span><i class="fa-solid fa-dna mr-2"></i>Hồ sơ Amino Acid (Axit Amin)</span>
-                    <span class="text-[10px] text-gray-500 font-normal">Hiển thị bằng đơn vị Gram (g)</span>
+                    <span><i class="fa-solid fa-dna mr-2"></i>Amino Acid Profile</span>
+                    <span class="text-[10px] text-gray-500 font-normal">Displayed in Grams (g)</span>
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     <div>
-                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">THIẾT YẾU (ESSENTIAL - EAAs/BCAAs)</h4>
+                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">ESSENTIAL (EAAs/BCAAs)</h4>
                         <div class="space-y-3" id="aa-essential-list">
                             </div>
                     </div>
                     <div>
-                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">KHÔNG THIẾT YẾU (NON-ESSENTIAL)</h4>
+                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">NON-ESSENTIAL</h4>
                         <div class="space-y-3" id="aa-nonessential-list">
                             </div>
                     </div>
@@ -181,6 +194,8 @@
 
         </div>
     </div>
+</body>
+</html>
 
     <script>
         // Các hằng số định nghĩa Amino Acid

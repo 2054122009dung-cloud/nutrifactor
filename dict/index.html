@@ -450,28 +450,20 @@
         if (goal === 'lose') { targetCalories -= 500; tdeeLabelVn = "Giảm Mỡ"; tdeeLabelEn = "Deficit"; }
 
         // 6. Macros
-        let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
-       if (diet === 'shredding') {
-            // Logic Shredding (PSMF): 
-            // 1. Protein = 2.5g nhân với số Kg cân nặng (Bạn có thể đổi thành 2.0 hoặc 2.2 tùy ý)
+        let finalCarb = 0, finalPro = 0, finalFat = 0;
+
+        if (diet === 'shredding') {
+            // Logic Shredding (PSMF)
             finalPro = Math.round(weight * 2.5); 
-            
-            // 2. Fat = Tối đa 5g cho mỗi 50g Protein (Tương đương 10% lượng Pro)
             finalFat = Math.round(finalPro * 0.1); 
-            
-            // 3. Carb = 0 để tối ưu hóa đốt mỡ (Ketosis)
             finalCarb = 0; 
-            
-            // 4. QUAN TRỌNG: Tính lại Calo mục tiêu dựa trên lượng Pro & Fat này. 
-            // Ở chế độ siết khô, tổng Calo sẽ tự động rớt xuống rất thấp (khoảng 800-1000 kcal).
             targetCalories = (finalPro * 4) + (finalFat * 9);
             
-            // Hiển thị số Calo màu đỏ để cảnh báo chế độ khắc nghiệt
             document.getElementById('res-tdee').style.color = 'var(--accent-red)';
             tdeeLabelVn = "Siết Khô";
             tdeeLabelEn = "Extreme Cut";
         } else {
-            // Reset lại màu cam cho TDEE bình thường
+            // Đặt lại màu chuẩn cho các chế độ khác (bạn có thể đổi màu tùy theme)
             document.getElementById('res-tdee').style.color = 'var(--accent-orange)';
             
             let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
@@ -482,11 +474,13 @@
             finalPro = Math.round((targetCalories * proPct) / 4);
             finalFat = Math.round((targetCalories * fatPct) / 9);
         }
+
+        // 7. Cập nhật giao diện (Sử dụng đúng các biến final vừa tính)
         document.getElementById('lbl-tdee').innerHTML = `${tdeeLabelVn} <br> <small style="font-weight:normal; font-size:0.7em;">${tdeeLabelEn}</small>`;
         document.getElementById('res-tdee').innerText = Math.round(targetCalories) + ' kcal';
-        document.getElementById('res-carb').innerText = Math.round((targetCalories * carbPct) / 4) + ' g';
-        document.getElementById('res-pro').innerText = Math.round((targetCalories * proPct) / 4) + ' g';
-        document.getElementById('res-fat').innerText = Math.round((targetCalories * fatPct) / 9) + ' g';
+        document.getElementById('res-carb').innerText = finalCarb + ' g';
+        document.getElementById('res-pro').innerText = finalPro + ' g';
+        document.getElementById('res-fat').innerText = finalFat + ' g';
         document.getElementById('res-water').innerText = (weight * 0.035).toFixed(1) + ' L';
         
         document.getElementById('res-bmr-info').innerText = `BMR: ${Math.round(bmr)} | Base TDEE: ${Math.round(originalTDEE)} | Adj TDEE: ${Math.round(totalTDEE)}`;

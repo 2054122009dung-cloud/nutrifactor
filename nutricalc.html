@@ -254,47 +254,41 @@
         }
     </style>
 </head>
-<body>
-
 <div class="container">
     <h1>🥩 NutriMap Ultimate</h1>
     
     <div class="input-section">
         <select id="foodSelect">
-            <optgroup label="Thịt Gà & Vịt / Poultry">
+            <optgroup label="Thịt & Nội tạng (Protein/B12)">
                 <option value="chicken_breast">Ức gà nạc</option>
-                <option value="chicken_thigh">Má đùi gà</option>
-                <option value="duck_meat">Thịt vịt nạc</option>
-            </optgroup>
-            <optgroup label="Thịt Bò & Heo / Beef & Pork">
                 <option value="beef_lean">Thăn bò & Bắp bò</option>
-                <option value="beef_fatty">Ba chỉ bò</option>
-                <option value="pork_lean">Nạc dăm & Nạc vai heo</option>
-                <option value="pork_fatty">Ba chỉ heo</option>
+                <option value="liver_beef">Gan bò (Siêu dinh dưỡng)</option>
+                <option value="pork_lean">Nạc dăm heo</option>
             </optgroup>
-            <optgroup label="Nội Tạng / Organ Meats">
-                <option value="liver_beef">Gan bò</option>
-                <option value="liver_pork">Gan heo</option>
+            
+            <optgroup label="Hải Sản & Trứng (Vit D/Kẽm)">
+                <option value="salmon">Cá hồi (Omega-3)</option>
+                <option value="herring">Cá trích (Vua Vitamin D)</option>
+                <option value="oyster">Hàu (Vua Kẽm)</option>
+                <option value="duck_egg_whole">Trứng vịt</option>
+                <option value="egg_yolk">Lòng đỏ trứng (Giàu Vit D)</option>
             </optgroup>
-            <optgroup label="Hải Sản / Seafood">
-                <option value="salmon">Cá hồi</option>
-                <option value="oyster">Hàu</option>
-            </optgroup>
-            <optgroup label="Trứng & Sữa / Eggs & Dairy">
-                <option value="duck_egg_whole">Trứng vịt (Nguyên quả)</option>
-                <option value="raw_milk">Sữa thô / Thanh trùng</option>
-            </optgroup>
-            <optgroup label="Rau Củ (Giàu Kali) / Veggies">
-                <option value="spinach">Cải bó xôi (Rau chân vịt)</option>
-                <option value="bell_pepper">Ớt chuông đỏ</option>
+
+            <optgroup label="Thực vật & Giải khát (Kali/Vit C)">
+                <option value="coconut_water">Nước dừa tươi (Nhiều Kali)</option>
+                <option value="guava">Quả Ổi (Vua Vitamin C)</option>
+                <option value="avocado">Quả Bơ (Kali & Fat tốt)</option>
+                <option value="spinach">Cải bó xôi (Kali & Magie)</option>
+                <option value="bell_pepper">Ớt chuông đỏ (Giàu Vit C)</option>
+                <option value="shiitake">Nấm hương (Phơi nắng - Vit D)</option>
                 <option value="sweet_potato">Khoai lang luộc</option>
             </optgroup>
-            <optgroup label="Trái Cây (Giàu Vit C) / Fruits">
-                <option value="guava">Ổi (Vua Vitamin C)</option>
-                <option value="avocado">Quả Bơ (Vua Kali/Fat tốt)</option>
+
+            <optgroup label="Sữa">
+                <option value="raw_milk">Sữa tươi thanh trùng</option>
             </optgroup>
         </select>
-        <input type="number" id="foodWeight" placeholder="Gram" value="100" min="1">
+        <input type="number" id="foodWeight" placeholder="Gram/ml" value="100" min="1">
         <button onclick="addFood()">Thêm Vào Khẩu Phần</button>
     </div>
 
@@ -314,34 +308,37 @@
             <div class="val" id="sumFat">0 g</div>
         </div>
         <div class="card">
-            <h3>Tỉ lệ Na:K <span style="font-size: 12px; font-weight: normal; color:var(--text-muted)">(Tốt < 1)</span></h3>
+            <h3>Tỉ lệ Na:K <span style="font-size: 11px; color:var(--text-muted)">(Tốt < 1)</span></h3>
             <div class="val" id="naKRatio">0.00</div>
         </div>
     </div>
 
     <div class="dashboard-grid">
         <div class="panel" id="panelMacros">
-            <h2>🍞 Macros (Carb & Sugar)</h2>
-            </div>
+            <h2>🍞 Carb & Sugar (Càng thấp càng tốt)</h2>
+        </div>
         
         <div class="panel" id="panelEAA">
             <h2>🧬 EAA & Hợp Chất</h2>
-            </div>
+        </div>
+
         <div class="panel" id="panelMinerals">
             <h2>🪨 Khoáng Chất (Minerals)</h2>
-            </div>
+        </div>
+
         <div class="panel" id="panelVitWater">
             <h2>💧 Vitamins (Tan trong nước)</h2>
-            </div>
+        </div>
+
         <div class="panel" id="panelVitFat">
-            <h2>🥑 Vitamins (Tan trong dầu)</h2>
-            </div>
+            <h2>🥑 Vitamins (Tan trong dầu - Gồm D)</h2>
+        </div>
     </div>
 
     <div class="panel evaluation-panel" id="panelEvaluation">
         <h2>⚕️ Báo Cáo Thiếu Hụt & Khuyến Nghị</h2>
         <ul class="eval-list" id="evalList">
-            <li class="success-text">Hãy thêm thức ăn để xem đánh giá hệ thống.</li>
+            <li class="success-text">Hãy thêm thức ăn để hệ thống phân tích dữ liệu.</li>
         </ul>
     </div>
 </div>
@@ -349,7 +346,7 @@
 
 <script>
     const db = {
-        // [Các chỉ số cũ... , Carb (index 37), Sugar (index 38)]
+        // [Calo, Protein, Fat, Creatine, Leu, Iso, Val, Lys, Thre, Phen, Meth, Hist, Tryp, VitA, B1, B2, B3, B5, B6, B7, B9, B12, VitC, VitD, VitE, VitK, Ca, Mg, K, Na, P, Fe, Zn, Cu, Se, Mn, I, Carb, Sugar]
         chicken_breast: { name: 'Ức gà nạc', data: [165,31,3.6,400,2300,1200,1400,2600,1300,1200,800,900,300, 21,0.1,0.1,11.2,1,0.6,2,4,0.3,0,0,0.3,0, 15,29,256,45,228,1,1,0.05,27,0.02,2, 0, 0] },
         chicken_thigh: { name: 'Má đùi gà', data: [209,26,10.9,350,1900,1000,1200,2200,1100,1000,700,800,250, 50,0.1,0.2,6,1.2,0.4,2,5,0.4,0,0,0.3,0, 11,20,200,80,180,1.1,1.5,0.06,20,0.02,2, 0, 0] },
         duck_meat: { name: 'Thịt vịt nạc', data: [201,23.5,11.2,380,1800,950,1100,2000,1000,950,600,700,200, 60,0.2,0.3,5.1,1.5,0.3,2,6,0.4,0,0,0.7,0, 12,20,252,65,203,2.7,1.9,0.2,14,0.02,2, 0, 0] },
@@ -367,11 +364,16 @@
         avocado: { name: 'Quả Bơ', data: [160, 2, 15, 0,0,0,0,0,0,0,0,0,0, 146, 0.1, 0.1, 1.7, 1.4, 0.3, 0, 81, 0, 10, 0, 2.1, 21, 12, 29, 485, 7, 52, 0.5, 0.6, 0.2, 0.4, 0.1, 0, 8.5, 0.7] },
         spinach: { name: 'Cải bó xôi', data: [23, 2.9, 0.4, 0,0,0,0,0,0,0,0,0,0, 9377, 0.1, 0.2, 0.7, 0.1, 0.2, 0, 194, 0, 28, 0, 2, 483, 99, 79, 558, 79, 49, 2.7, 0.5, 0.1, 1, 0.9, 0, 3.6, 0.4] },
         bell_pepper: { name: 'Ớt chuông đỏ', data: [31, 1, 0.3, 0,0,0,0,0,0,0,0,0,0, 3131, 0.1, 0.1, 1, 0.3, 0.3, 0, 46, 0, 128, 0, 1.6, 4.9, 7, 12, 211, 4, 26, 0.4, 0.3, 0.1, 0.1, 0.1, 0, 6, 4.2] },
-        sweet_potato: { name: 'Khoai lang luộc', data: [86, 1.6, 0.1, 0,0,0,0,0,0,0,0,0,0, 14187, 0.1, 0.1, 0.6, 0.6, 0.2, 0, 6, 0, 2.4, 0, 0.3, 2.3, 30, 25, 337, 55, 47, 0.6, 0.3, 0.2, 0.2, 0.3, 0, 20, 4.2] }
+        sweet_potato: { name: 'Khoai lang luộc', data: [86, 1.6, 0.1, 0,0,0,0,0,0,0,0,0,0, 14187, 0.1, 0.1, 0.6, 0.6, 0.2, 0, 6, 0, 2.4, 0, 0.3, 2.3, 30, 25, 337, 55, 47, 0.6, 0.3, 0.2, 0.2, 0.3, 0, 20, 4.2] },
+        
+        // --- CẬP NHẬT MỚI: D-BOOSTERS & NƯỚC DỪA ---
+        herring: { name: 'Cá trích', data: [158, 18, 9, 0, 1400, 800, 900, 1600, 700, 700, 500, 500, 200, 100, 0.1, 0.2, 3.2, 0.6, 0.3, 5, 10, 13, 0, 800, 1.1, 0.1, 57, 32, 327, 90, 236, 1.1, 1, 0.1, 36, 0.04, 30, 0, 0] },
+        shiitake: { name: 'Nấm hương', data: [34, 2.2, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.01, 0.2, 3.9, 1.5, 0.3, 0, 13, 0, 0, 400, 0, 0, 2, 20, 304, 9, 112, 0.4, 1, 0.1, 5.7, 0.2, 0, 6.8, 2.4] },
+        egg_yolk: { name: 'Lòng đỏ trứng', data: [322, 16, 27, 0, 1300, 800, 900, 1200, 700, 700, 400, 400, 200, 1442, 0.2, 0.5, 0.1, 3, 0.4, 60, 146, 2, 0, 218, 2.6, 0.7, 129, 5, 109, 48, 390, 2.7, 2.3, 0.1, 14, 0.1, 40, 3.6, 0.6] },
+        coconut_water: { name: 'Nước dừa tươi', data: [19, 0.7, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.03, 0.06, 0.08, 0.04, 0.03, 0, 3, 0, 2.4, 0, 0, 0, 24, 25, 250, 105, 20, 0.3, 0.1, 0.04, 1, 0.1, 0, 3.7, 2.6] }
     };
 
     const metricsConfig = [
-        // Bước 4: Thêm Carb & Sugar (isInverse giúp thanh đỏ khi vượt quá)
         { idx: 37, name: 'Tổng Carbs', target: 50, unit: 'g', panel: 'panelMacros', isInverse: true },
         { idx: 38, name: 'Đường (Sugar)', target: 25, unit: 'g', panel: 'panelMacros', isInverse: true },
         
@@ -417,19 +419,15 @@
     const healthConsequences = {
         'Creatine': 'Giảm khả năng bộc phát năng lượng ATP, cơ bắp phục hồi chậm.',
         'Leucine': 'Mất đi tín hiệu bật công tắc (mTOR) tổng hợp và xây dựng cơ bắp.',
-        'Valine': 'Hệ thần kinh trung ương dễ mệt mỏi khi vận động mạnh.',
-        'Lysine': 'Suy giảm khả năng hấp thụ Canxi và làm chậm quá trình tạo collagen.',
-        'Tryptophan': 'Khó ngủ, tinh thần căng thẳng do cơ thể không đủ nguyên liệu tạo Serotonin.',
-        'Canxi (Ca)': 'Mật độ xương giảm, dễ gặp tình trạng chuột rút, co thắt cơ bắp.',
-        'Magie (Mg)': 'Rất khó ngủ sâu, cơ bắp căng cứng, hệ thần kinh dễ bị kích thích.',
-        'Kali (K)': 'Mất cân bằng điện giải, cơ thể tích nước ngầm, dễ tăng huyết áp.',
-        'Sắt (Fe)': 'Gây thiếu máu, cơ bắp không đủ oxy để duy trì sức bền, hoa mắt.',
-        'Kẽm (Zn)': 'Suy giảm hệ miễn dịch, làm giảm sản sinh Testosterone ở nam giới.',
-        'I-ốt (I)': 'Tuyến giáp hoạt động kém, trao đổi chất chậm lại, dễ tích mỡ.',
-        'Vitamin B12': 'Mệt mỏi mãn tính, thiếu hụt năng lượng hoạt động dù ăn đủ Calo.',
-        'Vitamin D': 'Cơ thể không thể hấp thụ được Canxi, làm giảm hoocmon sinh lý.',
-        'Vitamin C': 'Gân cốt, dây chằng phục hồi chậm, hệ miễn dịch yếu, dễ ốm vặt.',
-        'Vitamin A': 'Khô da, thị lực yếu vào ban đêm, chức năng gan bị suy giảm.'
+        'Tryptophan': 'Khó ngủ, tinh thần căng thẳng do thiếu Serotonin.',
+        'Canxi (Ca)': 'Mật độ xương giảm, dễ gặp tình trạng chuột rút.',
+        'Magie (Mg)': 'Khó ngủ sâu, cơ bắp căng cứng, dễ bị stress.',
+        'Kali (K)': 'Cơ thể tích nước ngầm, dễ tăng huyết áp, mệt mỏi.',
+        'Sắt (Fe)': 'Gây thiếu máu, cơ bắp không đủ oxy để duy trì sức bền.',
+        'Kẽm (Zn)': 'Suy giảm hệ miễn dịch, làm giảm sản sinh Testosterone.',
+        'Vitamin B12': 'Mệt mỏi mãn tính, thiếu hụt năng lượng hoạt động.',
+        'Vitamin D': 'Khó hấp thụ Canxi, suy giảm hoocmon và hệ xương.',
+        'Vitamin C': 'Phục hồi mô kém, hệ miễn dịch yếu, dễ ốm vặt.'
     };
 
     let currentMeal = [];
@@ -459,7 +457,7 @@
         currentMeal.forEach(item => {
             const tag = document.createElement('div');
             tag.className = 'food-tag';
-            tag.innerHTML = `${db[item.key].name} (${item.weight}g) <button onclick="removeFood(${item.id})">×</button>`;
+            tag.innerHTML = `${db[item.key].name} (${item.weight}g/ml) <button onclick="removeFood(${item.id})">×</button>`;
             listDiv.appendChild(tag);
         });
 
@@ -480,9 +478,8 @@
         ratioEl.innerText = ratio;
         ratioEl.className = `val ${ratio > 1 ? 'warning' : 'good'}`;
 
-        // Bước 5: Cập nhật hàm updateUI để render Panel mới
         const panels = { 
-            panelMacros: '<h2>🍞 Macros (Carb & Sugar) <span style="font-size:12px; font-weight:normal; color:#94a3b8">(Càng thấp càng tốt)</span></h2>',
+            panelMacros: '<h2>🍞 Carb & Sugar (Càng thấp càng tốt)</h2>',
             panelEAA: '<h2>🧬 EAA & Hợp Chất</h2>', 
             panelMinerals: '<h2>🪨 Khoáng Chất</h2>', 
             panelVitWater: '<h2>💧 Vitamins (Nước)</h2>', 
@@ -493,7 +490,7 @@
         let missingList = [];
 
         if (tNa > 2000) {
-            warningsList.push(`<li class="danger-text">⚠️ <strong>Thừa Natri (${tNa.toFixed(0)}mg):</strong> Gây tích nước dưới da, tăng huyết áp.</li>`);
+            warningsList.push(`<li class="danger-text">⚠️ <strong>Thừa Natri (${tNa.toFixed(0)}mg):</strong> Gây tích nước, tăng huyết áp.</li>`);
         }
 
         metricsConfig.forEach(m => {
@@ -501,7 +498,6 @@
             let score = 0, percentage = 0, barClass = 'progress-bar-fill';
 
             if (m.isInverse) {
-                // Logic cho Carb/Sugar/Natri (Nàng thấp càng tốt)
                 percentage = Math.min(100, (total / m.target) * 100);
                 if (total <= m.target) {
                     score = 10;
@@ -512,10 +508,9 @@
             } else {
                 score = Math.min(10, (total / m.target) * 10);
                 percentage = Math.min(100, (total / m.target) * 100);
-                if (score === 10) barClass += ' maxed';
-                
+                if (score >= 9.9) barClass += ' maxed';
                 if (currentMeal.length > 0 && percentage < 50) {
-                    missingList.push({ name: m.name, pct: percentage, msg: healthConsequences[m.name] || 'Ảnh hưởng đến trao đổi chất.' });
+                    missingList.push({ name: m.name, pct: percentage, msg: healthConsequences[m.name] || 'Ảnh hưởng trao đổi chất.' });
                 }
             }
 
@@ -531,7 +526,6 @@
                 </div>`;
         });
 
-        // Đổ HTML vào Panels
         document.getElementById('panelMacros').innerHTML = panels.panelMacros;
         document.getElementById('panelEAA').innerHTML = panels.panelEAA;
         document.getElementById('panelMinerals').innerHTML = panels.panelMinerals;
@@ -540,17 +534,13 @@
 
         if (currentMeal.length > 0) {
             missingList.sort((a,b) => a.pct - b.pct);
-            const topMissing = missingList.slice(0, 5);
-            
-            topMissing.forEach(item => {
+            missingList.slice(0, 5).forEach(item => {
                 warningsList.push(`<li>🔍 <strong>Thiếu ${item.name} (${item.pct.toFixed(0)}%):</strong> ${item.msg}</li>`);
             });
-
             const evalDiv = document.getElementById('evalList');
             evalDiv.innerHTML = warningsList.length > 0 ? warningsList.join('') : '<li class="success-text">Tuyệt vời! Khẩu phần hiện tại rất cân bằng.</li>';
         }
     }
-
     updateUI();
 </script>
 </body>

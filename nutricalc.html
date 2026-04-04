@@ -253,49 +253,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriMap Ultimate</title>
-    <style>
-        :root {
-            --bg: #121212; --panel-bg: #1e1e1e; --text: #e0e0e0;
-            --text-muted: #9e9e9e; --primary: #bb86fc;
-            --success: #03dac6; --danger: #cf6679; --warning: #ffb74d;
-        }
-        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1, h2, h3 { color: #fff; }
-        .input-section { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-        select, input, button { padding: 10px; border-radius: 5px; border: 1px solid #333; background: #2c2c2c; color: #fff; }
-        button { background: var(--primary); color: #000; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { opacity: 0.9; }
-        .selected-list { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .food-tag { background: #333; padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
-        .food-tag button { background: transparent; color: var(--danger); padding: 0; margin: 0; font-size: 18px; }
-        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .card { background: var(--panel-bg); padding: 15px; border-radius: 10px; text-align: center; }
-        .card .val { font-size: 24px; font-weight: bold; color: var(--primary); }
-        .card .val.warning { color: var(--danger); }
-        .card .val.good { color: var(--success); }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .panel { background: var(--panel-bg); padding: 20px; border-radius: 10px; }
-        .nutrient-item { margin-bottom: 15px; }
-        .nutrient-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
-        .unit { color: var(--text-muted); font-size: 12px; }
-        .progress-bar-bg { background: #333; height: 8px; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { background: var(--primary); height: 100%; transition: width 0.3s; }
-        .progress-bar-fill.danger { background: var(--danger); }
-        .progress-bar-fill.maxed { background: var(--success); }
-        .evaluation-panel { border: 1px solid var(--warning); }
-        .eval-list { padding-left: 20px; }
-        .success-text { color: var(--success); }
-        .danger-text { color: var(--danger); }
-    </style>
-</head>
-<body>
 
 <div class="container">
     <h1>🥩 NutriMap Ultimate</h1>
@@ -303,10 +260,10 @@
     <div class="input-section">
         <select id="foodSelect">
             <optgroup label="Thịt & Nội tạng (Protein/B12)">
-                <option value="chicken_breast">Ức gà nạc</option>
-                <option value="beef_lean">Thăn bò & Bắp bò</option>
-                <option value="liver_beef">Gan bò (Siêu dinh dưỡng)</option>
-                <option value="pork_lean">Nạc dăm heo</option>
+                <option value="chicken_breast">Ức gà nạc(Chicken Breast)</option>
+                <option value="beef_lean">Thăn bò & Bắp bò (Lean Beef)</option>
+                <option value="liver_beef">Gan bò (Beef Liver)</option>
+                <option value="pork_lean">Nạc dăm heo(Lean Pork)</option>
             </optgroup>
             
             <optgroup label="Các loại Mỡ & Dầu (Fats & Oils)">
@@ -320,23 +277,23 @@
             <optgroup label="Hải Sản & Trứng (Vit D/Kẽm)">
                 <option value="salmon">Cá hồi (Omega-3)</option>
                 <option value="herring">Cá trích (Vua Vitamin D)</option>
-                <option value="oyster">Hàu (Vua Kẽm)</option>
-                <option value="duck_egg_whole">Trứng vịt</option>
-                <option value="egg_yolk">Lòng đỏ trứng (Giàu Vit D)</option>
+                <option value="oyster">Hàu (Oyster - Zinc)</option>
+                <option value="duck_egg_whole">Trứng vịt(Duck Egg)</option>
+                <option value="egg_yolk">Lòng đỏ trứng ( Vit D)</option>
             </optgroup>
 
             <optgroup label="Thực vật & Giải khát (Kali/Vit C)">
-                <option value="coconut_water">Nước dừa tươi (Nhiều Kali)</option>
-                <option value="guava">Quả Ổi (Vua Vitamin C)</option>
-                <option value="avocado">Quả Bơ (Kali & Fat tốt)</option>
+                <option value="coconut_water">Nước dừa tươi (Coconut Juice - Kali)</option>
+                <option value="guava">Quả Ổi (Guava - Vua Vitamin C)</option>
+                <option value="avocado">Quả Bơ (Kali & Fat -)</option>
                 <option value="spinach">Cải bó xôi (Kali & Magie)</option>
-                <option value="bell_pepper">Ớt chuông đỏ (Giàu Vit C)</option>
-                <option value="shiitake">Nấm hương (Phơi nắng - Vit D)</option>
-                <option value="sweet_potato">Khoai lang luộc</option>
+                <option value="bell_pepper">Ớt chuông đỏ ( Vit C)</option>
+                <option value="shiitake">Nấm hương (Mushroom - Vit D)</option>
+                <option value="sweet_potato">Khoai lang luộc(boiled potato)</option>
             </optgroup>
 
             <optgroup label="Sữa">
-                <option value="raw_milk">Sữa thô / Sữa tươi thanh trùng</option>
+                <option value="raw_milk">Sữa thô -Raw Milk</option>
             </optgroup>
         </select>
         <input type="number" id="foodWeight" placeholder="Gram/ml" value="100" min="1">

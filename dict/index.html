@@ -273,6 +273,7 @@
                     <option value="standard">Tiêu chuẩn | Standard (50/20/30)</option>
                     <option value="keto">Keto Diet (5/25/70)</option>
                     <option value="carnivore">Carnivore Diet (0/30/70)</option>
+                    <option value="shredding">Shredding (Max Pro | Low Fat)</option>
                 </select>
             </div>
 
@@ -297,6 +298,7 @@
                     <input type="number" id="testosterone" class="form-control" placeholder="600">
                 </div>
             </div>
+            
         </div>
 
         <div class="card">
@@ -451,7 +453,26 @@
         let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
         if (diet === 'keto') { carbPct = 0.05; proPct = 0.25; fatPct = 0.70; }
         else if (diet === 'carnivore') { carbPct = 0.00; proPct = 0.30; fatPct = 0.70; }
+        else if (diet === 'shredding') {
+            // Logic Shredding: Fat tối đa 5g cho mỗi 50g Protein (tức là Fat = Protein * 0.1)
+            // Lượng Calo = (Protein * 4) + (Fat * 9). Thay Fat vào công thức:
+            // Calo = (Protein * 4) + (Protein * 0.1 * 9) = Protein * 4.9
+            
+            finalPro = Math.round(targetCalories / 4.9);
+            finalFat = Math.round(finalPro * 0.1);
+            finalCarb = 0; // Ép Carb về 0 để tối ưu hóa việc đốt mỡ
+            
+            // Điều chỉnh lại Calo mục tiêu cho khớp với số gram thực tế (làm tròn)
+            targetCalories = (finalPro * 4) + (finalFat * 9);
+        } else {
+            let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
+            if (diet === 'keto') { carbPct = 0.05; proPct = 0.25; fatPct = 0.70; }
+            else if (diet === 'carnivore') { carbPct = 0.00; proPct = 0.30; fatPct = 0.70; }
 
+            finalCarb = Math.round((targetCalories * carbPct) / 4);
+            finalPro = Math.round((targetCalories * proPct) / 4);
+            finalFat = Math.round((targetCalories * fatPct) / 9);
+        }
         document.getElementById('lbl-tdee').innerHTML = `${tdeeLabelVn} <br> <small style="font-weight:normal; font-size:0.7em;">${tdeeLabelEn}</small>`;
         document.getElementById('res-tdee').innerText = Math.round(targetCalories) + ' kcal';
         document.getElementById('res-carb').innerText = Math.round((targetCalories * carbPct) / 4) + ' g';

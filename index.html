@@ -194,11 +194,9 @@
 
         </div>
     </div>
-</body>
-</html>
 
-    <script>
-        // Các hằng số định nghĩa Amino Acid
+<script>
+        // Constants defining Amino Acids
         const aaDefs = {
             essential: [
                 { id: 'leu', name: 'Leucine (BCAA)', color: 'bg-blue-500' },
@@ -224,7 +222,7 @@
             ]
         };
 
-        // Khởi tạo HTML cho thanh Amino Acid
+        // Initialize HTML for Amino Acid bars
         function setupAABars() {
             const createBar = (aa) => `
                 <div class="flex flex-col gap-1">
@@ -242,8 +240,8 @@
         }
         setupAABars();
 
-        // Database: Chỉ số Nutrition tính trên 100g thực phẩm tươi sống
-        // Lưu ý: Các giá trị Amino Acid được tính xấp xỉ theo tỷ lệ chuẩn của từng loại thịt.
+        // Database: Nutrition index calculated per 100g of raw food
+        // Note: Amino Acid values are approximated based on the standard ratio of each meat type.
         const db = {
             meat: {
                 chicken_breast: { 
@@ -358,16 +356,16 @@
 
         const menuData = {
             meatGroups: [
-                { label: "Thịt Gà & Vịt", items: [{ val: "chicken_breast", text: "Ức gà (Nạc)" }, { val: "chicken_thigh", text: "Má đùi gà (Lọc da)" }, { val: "duck_meat", text: "Thịt vịt (Bỏ da/Nạc)" }] },
-                { label: "Thịt Bò & Heo", items: [{ val: "beef_lean", text: "Thăn bò / Bắp bò (Nạc)" }, { val: "beef_fatty", text: "Ba chỉ bò (Nhiều mỡ)" }, { val: "pork_lean", text: "Nạc dăm / Nạc vai heo" }, { val: "pork_fatty", text: "Ba chỉ heo" }] },
-                { label: "Nội Tạng (Gan)", items: [{ val: "liver_beef", text: "Gan Bò" }, { val: "liver_pork", text: "Gan Heo" }, { val: "liver_chicken", text: "Gan Gà" }, { val: "liver_duck", text: "Gan Vịt" }] },
-                { label: "Hải Sản", items: [{ val: "salmon", text: "Cá hồi (Chứa Omega-3)" }, { val: "tuna", text: "Cá ngừ (Nạc)" }, { val: "shrimp", text: "Tôm (Nạc/Bỏ vỏ)" }, { val: "oyster", text: "Hàu (Kẽm cao)" }] },
-                { label: "Trứng", items: [{ val: "duck_egg_whole", text: "Trứng vịt (Nguyên quả)" }, { val: "duck_egg_white", text: "Trứng vịt (Chỉ lòng trắng)" }] }
+                { label: "Chicken & Duck Meat", items: [{ val: "chicken_breast", text: "Chicken breast (Lean)" }, { val: "chicken_thigh", text: "Chicken thigh (Skinless)" }, { val: "duck_meat", text: "Duck meat (Skinless/Lean)" }] },
+                { label: "Beef & Pork", items: [{ val: "beef_lean", text: "Beef tenderloin / Beef shank (Lean)" }, { val: "beef_fatty", text: "Beef belly (Fatty)" }, { val: "pork_lean", text: "Pork butt / Pork shoulder (Lean)" }, { val: "pork_fatty", text: "Pork belly" }] },
+                { label: "Organ Meats (Liver)", items: [{ val: "liver_beef", text: "Beef Liver" }, { val: "liver_pork", text: "Pork Liver" }, { val: "liver_chicken", text: "Chicken Liver" }, { val: "liver_duck", text: "Duck Liver" }] },
+                { label: "Seafood", items: [{ val: "salmon", text: "Salmon (Contains Omega-3)" }, { val: "tuna", text: "Tuna (Lean)" }, { val: "shrimp", text: "Shrimp (Lean/Peeled)" }, { val: "oyster", text: "Oyster (High Zinc)" }] },
+                { label: "Eggs", items: [{ val: "duck_egg_whole", text: "Duck egg (Whole)" }, { val: "duck_egg_white", text: "Duck egg (White only)" }] }
             ],
             sauces: [
-                { val: "none", text: "Không sốt (Dry)" },
-                { val: "savory", text: "Sốt mặn (Nước mắm, Xì dầu)" },
-                { val: "sweet", text: "Sốt ngọt (Teriyaki, BBQ)" }
+                { val: "none", text: "No sauce (Dry)" },
+                { val: "savory", text: "Savory sauce (Fish sauce, Soy sauce)" },
+                { val: "sweet", text: "Sweet sauce (Teriyaki, BBQ)" }
             ]
         };
 
@@ -401,8 +399,8 @@
             if (el) el.innerText = Number.isInteger(val) ? val : val.toFixed(decimals);
         };
 
-        // Hàm giả lập tính Amino Acid dựa trên Protein tổng
-        // (Đây là công thức sinh học chuẩn áp dụng chung cho đạm động vật)
+        // Simulated function to calculate Amino Acids based on total Protein
+        // (This is a standard biological formula generally applied to animal protein)
         function calcAminoAcids(totalProtein) {
             return {
                 leu: totalProtein * 0.080, iso: totalProtein * 0.045, val: totalProtein * 0.050,
@@ -476,7 +474,7 @@
             setVal('b6', meat.b6 * m);
             setVal('b9', Math.round(meat.b9 * m), 0);
             setVal('b12', meat.b12 * m);
-            setVal('biotin', meat.biotin * m); // B7 mới thêm
+            setVal('biotin', meat.biotin * m); // Newly added B7
             
             // Special Compounds
             setVal('cholesterol', Math.round(meat.chol * m), 0);
@@ -491,7 +489,7 @@
                 const val = aminoAcids[aaId];
                 setVal(`aa-${aaId}`, val, 2);
                 
-                // Trực quan hóa thanh bar (Max 10g là 100% độ dài thanh cho đẹp)
+                // Visualize the bar (Max 10g is 100% bar length for better UI)
                 const barEl = document.getElementById(`bar-aa-${aaId}`);
                 if (barEl) {
                     const pct = Math.min(100, (val / 10) * 100); 

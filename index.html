@@ -1,367 +1,202 @@
 <!DOCTYPE html>
-
 <html lang="vi">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>NutriMap Ultimate - Phân Tích Vi Chất Toàn Diện</title>
-
+    <title>NutriMap Ultimate - Phân Tích Vi Chất Toàn Diện / Comprehensive Micronutrient Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-
         /* Tùy chỉnh thanh cuộn cho đẹp */
-
         ::-webkit-scrollbar { width: 6px; }
-
         ::-webkit-scrollbar-track { background: #111827; }
-
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
-
         ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
-
     </style>
-
 </head>
-
 <body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-4 md:p-8 flex justify-center">
 
-
-
     <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6">
-
         
-
         <div class="lg:col-span-4 flex flex-col gap-6">
-
             <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl flex flex-col items-center">
-
-                <h2 class="text-xl font-bold text-emerald-400 mb-4 w-full"><i class="fa-solid fa-ruler-combined mr-2"></i> Không gian Thực tế</h2>
-
+                <h2 class="text-xl font-bold text-emerald-400 mb-4 w-full">
+                    <i class="fa-solid fa-ruler-combined mr-2"></i> Không gian Thực tế / <span class="text-sm font-normal text-gray-400">Physical Space</span>
+                </h2>
                 
-
                 <div class="w-full h-56 bg-gray-950 rounded-xl border-2 border-dashed border-gray-700 flex items-center justify-center relative overflow-hidden mb-6">
-
-                    <span class="absolute top-2 left-2 text-xs text-gray-500">Mặt cắt từ trên xuống</span>
-
-                    <div id="meat-box" class="bg-red-900/80 border-2 border-red-500 rounded-md transition-all duration-300 flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-
-                        <span class="text-red-200 font-bold text-sm drop-shadow-md">Thịt/Trứng</span>
-
+                    <span class="absolute top-2 left-2 text-[10px] uppercase tracking-wider text-gray-500">Mặt cắt / Top-down view</span>
+                    <div id="meat-box" class="bg-red-900/80 border-2 border-red-500 rounded-md transition-all duration-300 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                        <span class="text-red-100 font-bold text-sm drop-shadow-md">Thịt / Trứng</span>
+                        <span class="text-red-300 text-[10px] font-medium uppercase">Meat / Egg</span>
                     </div>
-
                 </div>
-
-
 
                 <div class="w-full space-y-4">
-
                     <div>
-
-                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Chiều dài (<span id="val-length" class="text-white font-bold">12</span> cm)</label></div>
-
+                        <div class="flex justify-between text-sm mb-1">
+                            <label class="text-gray-400">Chiều dài / <span class="italic">Length</span> (<span id="val-length" class="text-white font-bold">12</span> cm)</label>
+                        </div>
                         <input type="range" id="input-length" min="5" max="30" step="0.5" value="12" class="w-full accent-emerald-500">
-
                     </div>
-
                     <div>
-
-                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Chiều rộng (<span id="val-width" class="text-white font-bold">8</span> cm)</label></div>
-
+                        <div class="flex justify-between text-sm mb-1">
+                            <label class="text-gray-400">Chiều rộng / <span class="italic">Width</span> (<span id="val-width" class="text-white font-bold">8</span> cm)</label>
+                        </div>
                         <input type="range" id="input-width" min="4" max="25" step="0.5" value="8" class="w-full accent-emerald-500">
-
                     </div>
-
                     <div>
-
-                        <div class="flex justify-between text-sm mb-1"><label class="text-gray-400">Độ dày (<span id="val-thick" class="text-white font-bold">2</span> cm)</label></div>
-
+                        <div class="flex justify-between text-sm mb-1">
+                            <label class="text-gray-400">Độ dày / <span class="italic">Thickness</span> (<span id="val-thick" class="text-white font-bold">2</span> cm)</label>
+                        </div>
                         <input type="range" id="input-thick" min="0.5" max="6" step="0.5" value="2" class="w-full accent-emerald-500">
-
                     </div>
-
                 </div>
-
             </div>
-
-
 
             <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
-
-                <h2 class="text-md font-bold mb-3 flex items-center"><i class="fa-solid fa-spoon text-orange-400 mr-2"></i> Tùy chỉnh Nêm nếm</h2>
-
+                <h2 class="text-md font-bold mb-3 flex items-center">
+                    <i class="fa-solid fa-spoon text-orange-400 mr-2"></i> Tùy chỉnh Nêm nếm / <span class="text-xs font-normal text-gray-400 ml-1">Seasoning</span>
+                </h2>
                 <div class="space-y-4">
-
                     <div>
-
-                        <label class="text-xs text-gray-400 block mb-1">Cơ sở dữ liệu Thực phẩm</label>
-
+                        <label class="text-xs text-gray-400 block mb-1">Cơ sở dữ liệu Thực phẩm / Food Database</label>
                         <select id="input-meat" class="w-full bg-gray-950 border border-gray-700 rounded-xl p-2 text-sm text-white outline-none focus:border-emerald-500">
-
                         </select>
-
                     </div>
-
                     <div>
-
-                        <label class="text-xs text-gray-400 block mb-1">Loại Sốt (Nền)</label>
-
+                        <label class="text-xs text-gray-400 block mb-1">Loại Sốt (Nền) / Sauce Base</label>
                         <select id="input-sauce" class="w-full bg-gray-950 border border-gray-700 rounded-xl p-2 text-sm text-white outline-none focus:border-emerald-500">
-
                         </select>
-
                     </div>
-
                     <div>
-
                         <div class="flex justify-between text-sm mb-1">
-
-                            <label class="text-xs text-gray-400">Rắc thêm Muối (NaCl)</label>
-
+                            <label class="text-xs text-gray-400">Rắc thêm Muối / Salt (NaCl)</label>
                             <span class="text-yellow-400 font-bold"><span id="val-salt">0</span> g</span>
-
                         </div>
-
                         <input type="range" id="input-salt" min="0" max="5" step="0.25" value="0" class="w-full accent-yellow-500">
-
-                        <p class="text-[10px] text-gray-500 mt-1">1g muối ~ 390mg Natri</p>
-
+                        <p class="text-[10px] text-gray-500 mt-1">1g muối / salt ~ 390mg Natri / Sodium</p>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
-
 
         <div class="lg:col-span-8 bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl p-6 border border-gray-800 shadow-xl flex flex-col h-[calc(100vh-4rem)] overflow-y-auto">
-
             
-
             <div class="flex flex-wrap justify-between items-end border-b border-gray-800 pb-4 mb-4 gap-4 sticky top-0 bg-gray-950/90 backdrop-blur-sm z-10 pt-2">
-
                 <div>
-
-                    <p class="text-sm text-gray-400">Khối lượng (W = V × 1.05)</p>
-
+                    <p class="text-sm text-gray-400">Khối lượng / Weight <span class="text-[10px]">(W = V × 1.05)</span></p>
                     <p class="text-4xl font-black text-white"><span id="res-weight">0</span> <span class="text-xl font-normal text-gray-500">g</span></p>
-
                 </div>
-
                 <div class="flex gap-4">
-
                     <div class="text-center bg-gray-900/80 p-2 px-4 rounded-xl border border-gray-800">
-
-                        <p class="text-xs text-gray-400 mb-1">Tổng Calo</p>
-
+                        <p class="text-xs text-gray-400 mb-1">Tổng Calo / Calories</p>
                         <p class="text-2xl font-black text-orange-400"><span id="res-cal">0</span></p>
-
                     </div>
-
                     <div class="text-center bg-blue-900/30 p-2 px-4 rounded-xl border border-blue-900/50">
-
-                        <p class="text-xs text-blue-400 mb-1">Tỉ lệ K : Na</p>
-
+                        <p class="text-xs text-blue-400 mb-1">Tỉ lệ / Ratio K : Na</p>
                         <p class="text-2xl font-black text-blue-300"><span id="res-kna-ratio">0</span></p>
-
                     </div>
-
                 </div>
-
             </div>
-
-
 
             <div class="grid grid-cols-3 gap-3 mb-6">
-
                 <div class="bg-gray-900 rounded-xl p-3 border border-gray-800 text-center relative overflow-hidden">
-
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-blue-500"></div>
-
-                    <p class="text-[11px] text-gray-400 mb-1 font-bold">PROTEIN</p>
-
+                    <p class="text-[10px] text-gray-400 mb-1 font-bold">ĐẠM / PROTEIN</p>
                     <p class="font-bold text-xl text-white"><span id="res-pro">0</span>g</p>
-
                 </div>
-
                 <div class="bg-gray-900 rounded-xl p-3 border border-gray-800 text-center relative overflow-hidden">
-
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-yellow-500"></div>
-
-                    <p class="text-[11px] text-gray-400 mb-1 font-bold">FAT</p>
-
+                    <p class="text-[10px] text-gray-400 mb-1 font-bold">BÉO / FAT</p>
                     <p class="font-bold text-xl text-white"><span id="res-fat">0</span>g</p>
-
                 </div>
-
                 <div class="bg-gray-900 rounded-xl p-3 border border-gray-800 text-center relative overflow-hidden">
-
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-green-500"></div>
-
-                    <p class="text-[11px] text-gray-400 mb-1 font-bold">CARB</p>
-
+                    <p class="text-[10px] text-gray-400 mb-1 font-bold">BỘT ĐƯỜNG / CARB</p>
                     <p class="font-bold text-xl text-white"><span id="res-carb">0</span>g</p>
-
                 </div>
-
             </div>
-
-
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-
                 <div>
-
-                    <h3 class="text-sm font-bold text-emerald-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-gem mr-2"></i>Khoáng chất (Minerals)</h3>
-
+                    <h3 class="text-sm font-bold text-emerald-400 mb-3 border-b border-gray-800 pb-2">
+                        <i class="fa-solid fa-gem mr-2"></i>Khoáng chất / Minerals
+                    </h3>
                     <div class="space-y-1 text-[13px]">
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Natri (Na)</span> <span class="font-semibold text-yellow-400"><span id="res-sodium">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Kali (K)</span> <span class="font-semibold text-blue-400"><span id="res-potassium">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Sắt (Fe)</span> <span class="font-semibold"><span id="res-iron">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Kẽm (Zn)</span> <span class="font-semibold"><span id="res-zinc">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Magie (Mg)</span> <span class="font-semibold"><span id="res-magnesium">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Canxi (Ca)</span> <span class="font-semibold"><span id="res-calcium">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Phốt pho (P)</span> <span class="font-semibold"><span id="res-phosphorus">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Đồng (Cu)</span> <span class="font-semibold"><span id="res-copper">0</span> mg</span></div>
-
-                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Selen (Se)</span> <span class="font-semibold"><span id="res-selenium">0</span> mcg</span></div>
-
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Natri (Sodium)</span> <span class="font-semibold text-yellow-400"><span id="res-sodium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Kali (Potassium)</span> <span class="font-semibold text-blue-400"><span id="res-potassium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Sắt (Iron)</span> <span class="font-semibold"><span id="res-iron">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Kẽm (Zinc)</span> <span class="font-semibold"><span id="res-zinc">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Magie (Magnesium)</span> <span class="font-semibold"><span id="res-magnesium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Canxi (Calcium)</span> <span class="font-semibold"><span id="res-calcium">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Phốt pho (Phosphorus)</span> <span class="font-semibold"><span id="res-phosphorus">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Đồng (Copper)</span> <span class="font-semibold"><span id="res-copper">0</span> mg</span></div>
+                        <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Selen (Selenium)</span> <span class="font-semibold"><span id="res-selenium">0</span> mcg</span></div>
                     </div>
-
                 </div>
 
-
-
                 <div>
-
-                    <h3 class="text-sm font-bold text-orange-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-capsules mr-2"></i>Vitamin</h3>
-
+                    <h3 class="text-sm font-bold text-orange-400 mb-3 border-b border-gray-800 pb-2">
+                        <i class="fa-solid fa-capsules mr-2"></i>Vitamins
+                    </h3>
                     <div class="space-y-1 text-[13px]">
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Vitamin A</span> <span class="font-semibold"><span id="res-vita">0</span> IU</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Vitamin C</span> <span class="font-semibold"><span id="res-vitc">0</span> mg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Vitamin D</span> <span class="font-semibold"><span id="res-vitd">0</span> IU</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">Vitamin E</span> <span class="font-semibold"><span id="res-vite">0</span> mg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B1 (Thiamin)</span> <span class="font-semibold"><span id="res-b1">0</span> mg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B2 (Riboflavin)</span> <span class="font-semibold"><span id="res-b2">0</span> mg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B3 (Niacin)</span> <span class="font-semibold"><span id="res-b3">0</span> mg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B6 (Pyridoxine)</span> <span class="font-semibold"><span id="res-b6">0</span> mg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B7 (Biotin)</span> <span class="font-semibold text-pink-400"><span id="res-biotin">0</span> mcg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B9 (Folate)</span> <span class="font-semibold"><span id="res-b9">0</span> mcg</span></div>
-
                         <div class="flex justify-between hover:bg-gray-800/50 p-1.5 rounded"><span class="text-gray-400">B12 (Cobalamin)</span> <span class="font-semibold text-purple-400"><span id="res-b12">0</span> mcg</span></div>
-
                     </div>
-
                 </div>
-
-
 
                 <div>
-
-                    <h3 class="text-sm font-bold text-pink-400 mb-3 border-b border-gray-800 pb-2"><i class="fa-solid fa-bolt mr-2"></i>Hợp chất & Phụ trợ</h3>
-
+                    <h3 class="text-sm font-bold text-pink-400 mb-3 border-b border-gray-800 pb-2">
+                        <i class="fa-solid fa-bolt mr-2"></i>Hợp chất / Compounds
+                    </h3>
                     <div class="space-y-1 text-[13px]">
-
                         <div class="flex justify-between bg-gray-800/30 p-1.5 rounded border border-gray-800/50">
-
                             <span class="text-gray-400">Creatine</span> 
-
                             <span class="font-bold text-white"><span id="res-creatine">0</span> mg</span>
-
                         </div>
-
                         <div class="flex justify-between bg-gray-800/30 p-1.5 rounded border border-gray-800/50">
-
                             <span class="text-gray-400">Taurine</span> 
-
                             <span class="font-bold text-white"><span id="res-taurine">0</span> mg</span>
-
                         </div>
-
                         <div class="flex justify-between bg-red-900/20 p-1.5 rounded border border-red-900/30 mt-4">
-
                             <span class="text-red-300">Cholesterol</span> 
-
                             <span class="font-bold text-red-400"><span id="res-cholesterol">0</span> mg</span>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
 
             <div class="border-t border-gray-800 pt-4">
-
                 <h3 class="text-sm font-bold text-blue-400 mb-4 flex justify-between items-end">
-
-                    <span><i class="fa-solid fa-dna mr-2"></i>Hồ sơ Amino Acid (Axit Amin)</span>
-
-                    <span class="text-[10px] text-gray-500 font-normal">Hiển thị bằng đơn vị Gram (g)</span>
-
+                    <span><i class="fa-solid fa-dna mr-2"></i>Hồ sơ Axit Amin / Amino Acid Profile</span>
+                    <span class="text-[10px] text-gray-500 font-normal italic">Đơn vị / Unit: Gram (g)</span>
                 </h3>
-
                 
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
                     <div>
-
-                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">THIẾT YẾU (ESSENTIAL - EAAs/BCAAs)</h4>
-
+                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">THIẾT YẾU / ESSENTIAL (EAAs/BCAAs)</h4>
                         <div class="space-y-3" id="aa-essential-list">
-
-                            </div>
-
+                        </div>
                     </div>
-
                     <div>
-
-                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">KHÔNG THIẾT YẾU (NON-ESSENTIAL)</h4>
-
+                        <h4 class="text-xs text-gray-500 mb-3 font-semibold tracking-wider">KHÔNG THIẾT YẾU / NON-ESSENTIAL</h4>
                         <div class="space-y-3" id="aa-nonessential-list">
-
-                            </div>
-
+                        </div>
                     </div>
-
                 </div>
-
             </div>
 
-
-
         </div>
-
     </div>
 
         <script>
@@ -682,33 +517,57 @@
 
 
 
-        const menuData = {
-
-            meatGroups: [
-
-                { label: "Thịt Gà & Vịt", items: [{ val: "chicken_breast", text: "Ức gà (Nạc)" }, { val: "chicken_thigh", text: "Má đùi gà (Lọc da)" }, { val: "duck_meat", text: "Thịt vịt (Bỏ da/Nạc)" }] },
-
-                { label: "Thịt Bò & Heo", items: [{ val: "beef_lean", text: "Thăn bò / Bắp bò (Nạc)" }, { val: "beef_fatty", text: "Ba chỉ bò (Nhiều mỡ)" }, { val: "pork_lean", text: "Nạc dăm / Nạc vai heo" }, { val: "pork_fatty", text: "Ba chỉ heo" }] },
-
-                { label: "Nội Tạng (Gan)", items: [{ val: "liver_beef", text: "Gan Bò" }, { val: "liver_pork", text: "Gan Heo" }, { val: "liver_chicken", text: "Gan Gà" }, { val: "liver_duck", text: "Gan Vịt" }] },
-
-                { label: "Hải Sản", items: [{ val: "salmon", text: "Cá hồi (Chứa Omega-3)" }, { val: "tuna", text: "Cá ngừ (Nạc)" }, { val: "shrimp", text: "Tôm (Nạc/Bỏ vỏ)" }, { val: "oyster", text: "Hàu (Kẽm cao)" }] },
-
-                { label: "Trứng", items: [{ val: "duck_egg_whole", text: "Trứng vịt (Nguyên quả)" }, { val: "duck_egg_white", text: "Trứng vịt (Chỉ lòng trắng)" }] }
-
-            ],
-
-            sauces: [
-
-                { val: "none", text: "Không sốt (Dry)" },
-
-                { val: "savory", text: "Sốt mặn (Nước mắm, Xì dầu)" },
-
-                { val: "sweet", text: "Sốt ngọt (Teriyaki, BBQ)" }
-
-            ]
-
-        };
+      const menuData = {
+    meatGroups: [
+        { 
+            label: "Thịt Gà & Vịt / Poultry", 
+            items: [
+                { val: "chicken_breast", text: "Ức gà (Nạc) / Chicken Breast (Lean)" }, 
+                { val: "chicken_thigh", text: "Má đùi gà (Lọc da) / Chicken Thigh (Skinless)" }, 
+                { val: "duck_meat", text: "Thịt vịt (Bỏ da/Nạc) / Duck Meat (Skinless/Lean)" }
+            ] 
+        },
+        { 
+            label: "Thịt Bò & Heo / Beef & Pork", 
+            items: [
+                { val: "beef_lean", text: "Thăn bò & Bắp bò / Beef Tenderloin & Shank" }, 
+                { val: "beef_fatty", text: "Ba chỉ bò / Beef Brisket (Fatty)" }, 
+                { val: "pork_lean", text: "Nạc dăm & Nạc vai / Pork Shoulder (Lean)" }, 
+                { val: "pork_fatty", text: "Ba chỉ heo / Pork Belly" }
+            ] 
+        },
+        { 
+            label: "Nội Tạng (Gan) / Organ Meats (Liver)", 
+            items: [
+                { val: "liver_beef", text: "Gan Bò / Beef Liver" }, 
+                { val: "liver_pork", text: "Gan Heo / Pork Liver" }, 
+                { val: "liver_chicken", text: "Gan Gà / Chicken Liver" }, 
+                { val: "liver_duck", text: "Gan Vịt / Duck Liver" }
+            ] 
+        },
+        { 
+            label: "Hải Sản / Seafood", 
+            items: [
+                { val: "salmon", text: "Cá hồi (Omega-3) / Salmon" }, 
+                { val: "tuna", text: "Cá ngừ (Nạc) / Tuna (Lean)" }, 
+                { val: "shrimp", text: "Tôm (Bỏ vỏ) / Shrimp (Peeled)" }, 
+                { val: "oyster", text: "Hàu (Kẽm cao) / Oyster (High Zinc)" }
+            ] 
+        },
+        { 
+            label: "Trứng / Eggs", 
+            items: [
+                { val: "duck_egg_whole", text: "Trứng vịt (Nguyên quả) / Duck Egg (Whole)" }, 
+                { val: "duck_egg_white", text: "Trứng vịt (Lòng trắng) / Duck Egg (White only)" }
+            ] 
+        }
+    ],
+    sauces: [
+        { val: "none", text: "Không sốt / No Sauce (Dry)" },
+        { val: "savory", text: "Sốt mặn (Nước mắm, Xì dầu) / Savory (Fish sauce, Soy)" },
+        { val: "sweet", text: "Sốt ngọt (Teriyaki, BBQ) / Sweet (Teriyaki, BBQ)" }
+    ]
+};
 
 
 

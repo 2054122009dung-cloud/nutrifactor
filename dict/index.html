@@ -453,17 +453,27 @@
         let finalCarb = 0, finalPro = 0, finalFat = 0;
 
         if (diet === 'shredding') {
-            // Logic Shredding (PSMF)
-            finalPro = Math.round(weight * 2.5); 
+            // Chốt chặn an toàn: Calo tối thiểu = số lbs * 10 (1 kg = 2.2 lbs)
+            const minCalories = weight * 2.2 * 10;
+            if (targetCalories < minCalories) {
+                targetCalories = minCalories;
+            }
+
+            // Tính toán Max Pro dựa trên tổng Calo hiện có
+            // Công thức: Calo = (Pro * 4) + (Fat * 9) -> Mức Fat = Pro * 0.1
+            // Thay vào: Calo = (Pro * 4) + (Pro * 0.1 * 9) = Pro * 4.9
+            finalPro = Math.round(targetCalories / 4.9); 
             finalFat = Math.round(finalPro * 0.1); 
             finalCarb = 0; 
+            
+            // Khớp lại Calo chính xác theo gram
             targetCalories = (finalPro * 4) + (finalFat * 9);
             
             document.getElementById('res-tdee').style.color = 'var(--accent-red)';
             tdeeLabelVn = "Siết Khô";
             tdeeLabelEn = "Extreme Cut";
         } else {
-            // Đặt lại màu chuẩn cho các chế độ khác (bạn có thể đổi màu tùy theme)
+            // Đặt lại màu chuẩn cho các chế độ khác
             document.getElementById('res-tdee').style.color = 'var(--accent-orange)';
             
             let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
@@ -475,7 +485,7 @@
             finalFat = Math.round((targetCalories * fatPct) / 9);
         }
 
-        // 7. Cập nhật giao diện (Sử dụng đúng các biến final vừa tính)
+        // 7. Cập nhật giao diện
         document.getElementById('lbl-tdee').innerHTML = `${tdeeLabelVn} <br> <small style="font-weight:normal; font-size:0.7em;">${tdeeLabelEn}</small>`;
         document.getElementById('res-tdee').innerText = Math.round(targetCalories) + ' kcal';
         document.getElementById('res-carb').innerText = finalCarb + ' g';

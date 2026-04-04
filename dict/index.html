@@ -451,20 +451,29 @@
 
         // 6. Macros
         let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
-        if (diet === 'keto') { carbPct = 0.05; proPct = 0.25; fatPct = 0.70; }
-        else if (diet === 'carnivore') { carbPct = 0.00; proPct = 0.30; fatPct = 0.70; }
-        else if (diet === 'shredding') {
-            // Logic Shredding: Fat tối đa 5g cho mỗi 50g Protein (tức là Fat = Protein * 0.1)
-            // Lượng Calo = (Protein * 4) + (Fat * 9). Thay Fat vào công thức:
-            // Calo = (Protein * 4) + (Protein * 0.1 * 9) = Protein * 4.9
+       if (diet === 'shredding') {
+            // Logic Shredding (PSMF): 
+            // 1. Protein = 2.5g nhân với số Kg cân nặng (Bạn có thể đổi thành 2.0 hoặc 2.2 tùy ý)
+            finalPro = Math.round(weight * 2.5); 
             
-            finalPro = Math.round(targetCalories / 4.9);
-            finalFat = Math.round(finalPro * 0.1);
-            finalCarb = 0; // Ép Carb về 0 để tối ưu hóa việc đốt mỡ
+            // 2. Fat = Tối đa 5g cho mỗi 50g Protein (Tương đương 10% lượng Pro)
+            finalFat = Math.round(finalPro * 0.1); 
             
-            // Điều chỉnh lại Calo mục tiêu cho khớp với số gram thực tế (làm tròn)
+            // 3. Carb = 0 để tối ưu hóa đốt mỡ (Ketosis)
+            finalCarb = 0; 
+            
+            // 4. QUAN TRỌNG: Tính lại Calo mục tiêu dựa trên lượng Pro & Fat này. 
+            // Ở chế độ siết khô, tổng Calo sẽ tự động rớt xuống rất thấp (khoảng 800-1000 kcal).
             targetCalories = (finalPro * 4) + (finalFat * 9);
+            
+            // Hiển thị số Calo màu đỏ để cảnh báo chế độ khắc nghiệt
+            document.getElementById('res-tdee').style.color = 'var(--accent-red)';
+            tdeeLabelVn = "Siết Khô";
+            tdeeLabelEn = "Extreme Cut";
         } else {
+            // Reset lại màu cam cho TDEE bình thường
+            document.getElementById('res-tdee').style.color = 'var(--accent-orange)';
+            
             let carbPct = 0.50, proPct = 0.20, fatPct = 0.30;
             if (diet === 'keto') { carbPct = 0.05; proPct = 0.25; fatPct = 0.70; }
             else if (diet === 'carnivore') { carbPct = 0.00; proPct = 0.30; fatPct = 0.70; }

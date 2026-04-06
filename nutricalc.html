@@ -255,7 +255,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
-
 <div class="container">
     <h1>🥩 NutriMap Ultimate</h1>
     
@@ -302,6 +301,7 @@
         </ul>
     </div>
 </div>
+
 <script>
     const db = {
         // [Calo, Protein, Fat, Creatine, Leu, Iso, Val, Lys, Thre, Phen, Meth, Hist, Tryp, VitA, B1, B2, B3, B5, B6, B7, B9, B12, VitC, VitD, VitE, VitK, Ca, Mg, K, Na, P, Fe, Zn, Cu, Se, Mn, I, Carb, Sugar, L-Carnitine, Omega3, Caffeine]
@@ -395,7 +395,7 @@
         { idx: 13, name: 'Vitamin A', target: 3000, unit: 'IU', panel: 'panelVitFat' },
         { idx: 23, name: 'Vitamin D', target: 1000, unit: 'IU', panel: 'panelVitFat' },
         { idx: 24, name: 'Vitamin E', target: 15, unit: 'mg', panel: 'panelVitFat' },
-        { idx: 25, name: 'Vitamin K', target: 120, unit: 'mcg', panel: 'panelVitFat' },
+        { idx: 25, name: 'Vitamin K', target: 120, unit: 'mcg', panel: 'panelVitFat' }
     ];
 
     const healthConsequences = {
@@ -471,6 +471,18 @@
     };
 
     let currentMeal = [];
+
+    // HÀM MỚI ĐƯỢC THÊM VÀO ĐỂ LOAD DANH SÁCH MÓN ĂN VÀO THẺ <select>
+    function initFoodOptions() {
+        const select = document.getElementById('foodSelect');
+        // Duyệt qua tất cả các key trong db
+        for (const [key, value] of Object.entries(db)) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = value.name;
+            select.appendChild(option);
+        }
+    }
 
     function addFood() {
         const key = document.getElementById('foodSelect').value;
@@ -572,7 +584,7 @@
                 </div>`;
         });
 
-        // Kiểm tra phần tử tồn tại trước khi cập nhật HTML (bảo vệ lỗi console nếu bạn chưa gắn ID)
+        // Kiểm tra phần tử tồn tại trước khi cập nhật HTML
         ['panelMacros', 'panelEAA', 'panelMinerals', 'panelVitWater', 'panelVitFat'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.innerHTML = panels[id];
@@ -589,6 +601,8 @@
         }
     }
     
+    // Khởi tạo danh sách món ăn trước
+    initFoodOptions();
     // Gọi hàm update UI lần đầu để render khung dữ liệu
     updateUI();
 </script>

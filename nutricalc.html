@@ -260,44 +260,8 @@
     <h1>🥩 NutriMap Ultimate</h1>
     
     <div class="input-section">
-        <select id="foodSelect">
-            <optgroup label="Thịt & Nội tạng (Protein/B12)">
-                <option value="chicken_breast">Ức gà nạc(Chicken Breast)</option>
-                <option value="beef_lean">Thăn bò & Bắp bò (Lean Beef)</option>
-                <option value="liver_beef">Gan bò (Beef Liver)</option>
-                <option value="pork_lean">Nạc dăm heo(Lean Pork)</option>
-            </optgroup>
-            
-            <optgroup label="Các loại Mỡ & Dầu (Fats & Oils)">
-                <option value="beef_tallow">Mỡ bò (Beef Tallow)</option>
-                <option value="pork_lard">Mỡ heo (Pork Lard)</option>
-                <option value="chicken_skin">Da gà (Chicken Skin)</option>
-                <option value="duck_fat">Mỡ vịt (Duck Fat)</option>
-                <option value="coconut_oil">Dầu dừa (Coconut Oil)</option>
-            </optgroup>
-            
-            <optgroup label="Hải Sản & Trứng (Vit D/Kẽm)">
-                <option value="salmon">Cá hồi (Omega-3)</option>
-                <option value="herring">Cá trích (Vua Vitamin D)</option>
-                <option value="oyster">Hàu (Oyster - Zinc)</option>
-                <option value="duck_egg_whole">Trứng vịt(Duck Egg)</option>
-                <option value="egg_yolk">Lòng đỏ trứng ( Vit D)</option>
-            </optgroup>
-
-            <optgroup label="Thực vật & Giải khát (Kali/Vit C)">
-                <option value="coconut_water">Nước dừa tươi (Coconut Juice - Kali)</option>
-                <option value="guava">Quả Ổi (Guava - Vua Vitamin C)</option>
-                <option value="avocado">Quả Bơ (Avocado Kali & Fat)</option>
-                <option value="spinach">Cải bó xôi (Kali & Magie)</option>
-                <option value="bell_pepper">Ớt chuông đỏ ( Red bell pepper -Vit C)</option>
-                <option value="shiitake">Nấm hương (Mushroom - Vit D)</option>
-                <option value="sweet_potato">Khoai lang luộc(boiled potato)</option>
-            </optgroup>
-
-            <optgroup label="Sữa">
-                <option value="raw_milk">Sữa thô -Raw Milk</option>
-            </optgroup>
-        </select>
+        <select id="foodSelect"></select> 
+        
         <input type="number" id="foodWeight" placeholder="Gram/ml" value="100" min="1">
         <button onclick="addFood()"> add into consumption - Thêm Vào Khẩu Phần</button>
     </div>
@@ -324,25 +288,11 @@
     </div>
 
     <div class="dashboard-grid">
-        <div class="panel" id="panelMacros">
-            <h2>🍞 Carb & Sugar (Càng thấp càng tốt The less the better)</h2>
-        </div>
-        
-        <div class="panel" id="panelEAA">
-            <h2>🧬 EAA & Hợp Chất</h2>
-        </div>
-
-        <div class="panel" id="panelMinerals">
-            <h2>🪨 Khoáng Chất (Minerals)</h2>
-        </div>
-
-        <div class="panel" id="panelVitWater">
-            <h2>💧 Vitamins (Tan trong nước)</h2>
-        </div>
-
-        <div class="panel" id="panelVitFat">
-            <h2>🥑 Vitamins (Tan trong dầu - Gồm D)</h2>
-        </div>
+        <div class="panel" id="panelMacros"></div>
+        <div class="panel" id="panelEAA"></div>
+        <div class="panel" id="panelMinerals"></div>
+        <div class="panel" id="panelVitWater"></div>
+        <div class="panel" id="panelVitFat"></div>
     </div>
 
     <div class="panel evaluation-panel" id="panelEvaluation">
@@ -352,7 +302,6 @@
         </ul>
     </div>
 </div>
-
 <script>
     const db = {
         // [Calo, Protein, Fat, Creatine, Leu, Iso, Val, Lys, Thre, Phen, Meth, Hist, Tryp, VitA, B1, B2, B3, B5, B6, B7, B9, B12, VitC, VitD, VitE, VitK, Ca, Mg, K, Na, P, Fe, Zn, Cu, Se, Mn, I, Carb, Sugar]
@@ -366,7 +315,7 @@
         liver_beef: { name: 'Gan bò', data: [135,20.4,3.6,50,1700,900,1100,1500,850,950,450,550,250, 16898,0.2,2.8,13.2,7.1,1,36,290,59.3,1.3,45,0.4,3, 5,18,313,69,297,4.9,4,9.8,39,0.3,15, 4, 0] },
         liver_pork: { name: 'Gan heo', data: [134,21.4,4.4,50,1800,950,1200,1600,900,1000,480,600,280, 15306,0.3,2.2,11.8,5.8,0.6,30,212,26,23,0,0.4,0, 8,18,273,87,288,23.3,5.7,0.6,52,0.3,14, 4, 0] },
         
-        // THÊM CÁC LOẠI MỠ & DẦU VÀO ĐÂY (Dữ liệu dựa trên USDA cho 100g)
+        // CÁC LOẠI MỠ & DẦU (Dữ liệu dựa trên USDA cho 100g)
         beef_tallow: { name: 'Mỡ bò (Beef Tallow)', data: [902, 0, 100, 0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0, 0, 2.7, 0, 0,0,0,0,0,0,0,0,0,0,0, 0, 0] },
         pork_lard: { name: 'Mỡ heo (Pork Lard)', data: [902, 0, 100, 0,0,0,0,0,0,0,0,0,0, 0, 0,0,0,0,0,0,0,0,0, 102, 0.6, 0, 0,0,0,0,0,0,0,0,0,0,0, 0, 0] },
         chicken_skin: { name: 'Da gà (Chicken Skin)', data: [349, 13.3, 32.4, 0, 1000, 500, 600, 1100, 500, 500, 300, 400, 150, 48, 0.04, 0.1, 3.2, 0.7, 0.2, 0, 4, 0.2, 0, 0, 0.3, 0, 10, 13, 160, 60, 120, 0.8, 1, 0.04, 11, 0.02, 0, 0, 0] },
@@ -431,7 +380,7 @@
         { idx: 25, name: 'Vitamin K', target: 120, unit: 'mcg', panel: 'panelVitFat' },
     ];
 
-const healthConsequences = {
+    const healthConsequences = {
         'Creatine': 
             'Giảm khả năng bộc phát năng lượng ATP, cơ bắp phục hồi chậm, giảm sức mạnh và sự minh mẫn thần kinh. ' +
             '<br>💡 <b>Nên kết hợp:</b> Tinh bột (Carb) hoặc Natri (Na) để tăng insulin, đẩy nhanh hấp thu vào tế bào cơ. ' +

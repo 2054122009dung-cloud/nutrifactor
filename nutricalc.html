@@ -303,6 +303,14 @@
 </div>
 
 <script>
+const NUTRIENT_INDEX = {
+    CALO: 0, PROTEIN: 1, FAT: 2, CREATINE: 3,
+    LEU: 4, ISO: 5, VAL: 6, LYS: 7, THRE: 8, PHEN: 9, METH: 10, HIST: 11, TRYP: 12,
+    VITA: 13, B1: 14, B2: 15, B3: 16, B5: 17, B6: 18, B7: 19, B9: 20, B12: 21, VITC: 22, VITD: 23, VITE: 24, VITK: 25,
+    CA: 26, MG: 27, K: 28, NA: 29, P: 30, FE: 31, ZN: 32, CU: 33, SE: 34, MN: 35, I: 36,
+    CARB: 37, SUGAR: 38, L_CARNITINE: 39, OMEGA3: 40, CAFFEINE: 41
+};
+
 const db = {
         // [Calo, Protein, Fat, Creatine, Leu, Iso, Val, Lys, Thre, Phen, Meth, Hist, Tryp, VitA, B1, B2, B3, B5, B6, B7, B9, B12, VitC, VitD, VitE, VitK, Ca, Mg, K, Na, P, Fe, Zn, Cu, Se, Mn, I, Carb, Sugar, L-Carnitine, Omega3, Caffeine]
         chicken_breast: { name: 'Ức gà nạc (Chicken Breast)', data: [165,31,3.6,400,2300,1200,1400,2600,1300,1200,800,900,300, 21,0.1,0.1,11.2,1,0.6,2,4,0.3,0,0,0.3,0, 15,29,256,45,228,1,1,0.05,27,0.02,2, 0, 0, 3, 40, 0] },
@@ -350,14 +358,13 @@ const db = {
         feta_cheese: { name: 'Phô mai Feta (Feta Cheese)', data: [264, 14.2, 21.3, 0, 1400, 700, 900, 1200, 600, 700, 350, 400, 200, 422, 0.2, 0.8, 1, 1, 0.4, 5, 32, 1.7, 0, 16, 0.2, 1.8, 493, 19, 62, 1116, 337, 0.7, 2.9, 0.03, 15, 0.03, 20, 4.1, 4.1, 2, 100, 0] },
         
         // ĐỒ UỐNG & CAFFEINE
-        white_monster: { name: 'Monster Trắng (White Monster Zero Energy)', data: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8.5, 4.2, 0.8, 0, 0, 2.5, 0, 0, 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 30] },
+        white_monster: { name: 'Monster Trắng (White Monster Zero Energy)', data: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8.5, 4.2, 0.8, 0, 0, 2.5, 0, 0, 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 0.8, 0, 15, 0, 30] },
         green_tea: { name: 'Trà xanh không đường (Green Tea)', data: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.06, 0, 0, 0.01, 0, 0, 0, 0.3, 0, 0, 0, 0, 1, 8, 1, 0, 0.02, 0, 0, 0, 0.2, 0, 0, 0, 0, 0, 12] },
         black_coffee: { name: 'Cà phê đen (Black Coffee)', data: [2, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0.3, 0, 0, 2, 0, 0, 0, 0, 0, 2, 3, 49, 2, 3, 0.01, 0.02, 0, 0, 0.05, 0, 0, 0, 0, 0, 40] },
         guava_juice: { name: 'Nước ép ổi (Guava Juice)', data: [46, 0.1, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0.02, 0.02, 0.2, 0.1, 0.04, 0, 14, 0, 80, 0, 0.4, 1, 10, 8, 180, 2, 10, 0.2, 0.1, 0.05, 0.1, 0.04, 0, 11.5, 10, 0, 0, 0] },
         pineapple_juice: { name: 'Nước ép dứa (Pineapple Juice)', data: [53, 0.4, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0.06, 0.02, 0.3, 0.2, 0.1, 0, 18, 0, 43.8, 0, 0, 0.3, 13, 12, 130, 2, 8, 0.3, 0.1, 0.1, 0.1, 0.5, 0, 12.9, 9.9, 0, 0, 0] },
         coconut_water: { name: 'Nước dừa tươi (Fresh Coconut Water)', data: [19, 0.7, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.03, 0.06, 0.08, 0.04, 0.03, 0, 3, 0, 2.4, 0, 0, 0, 24, 25, 250, 105, 20, 0.3, 0.1, 0.04, 1, 0.1, 0, 3.7, 2.6, 0, 0, 0] }
     };
-
     const metricsConfig = [
         { idx: 37, name: 'Tổng Carbs', target: 50, unit: 'g', panel: 'panelMacros', isInverse: true },
         { idx: 38, name: 'Đường (Sugar)', target: 25, unit: 'g', panel: 'panelMacros', isInverse: true },

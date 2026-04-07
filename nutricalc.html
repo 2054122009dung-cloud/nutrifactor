@@ -736,10 +736,8 @@ function generateAutoMenu() {
     // CƠ CHẾ CYCLING (LUÂN PHIÊN MENU)
     const currentParams = `${targetCal}_${targetPro}_${goal}`;
     if (window.lastGenParams === currentParams) {
-        // Nếu thông số không đổi, tăng index để xoay vòng (0 -> 1 -> 2 -> 0...)
         window.menuCycleIndex = (window.menuCycleIndex + 1) % 3; 
     } else {
-        // Nếu thay đổi thông số, reset về menu Top 1
         window.menuCycleIndex = 0; 
         window.lastGenParams = currentParams;
     }
@@ -774,6 +772,7 @@ function generateAutoMenu() {
         };
     });
 
+    // Mảng đã sort từ xịn nhất xuống kém nhất
     foods.sort((a, b) => b.score - a.score);
 
     let drinkFoods = foods.filter(f => f.isDrink);
@@ -792,9 +791,8 @@ function generateAutoMenu() {
         }
     };
 
-    // BƯỚC 0: ÉP THÊM 1 MÓN NƯỚC (Dịch chuyển theo cycle index)
+    // BƯỚC 0: ÉP THÊM 1 MÓN NƯỚC (Giữ nguyên)
     if (drinkFoods.length > 0) {
-        // Chọn nước lùi xuống theo index (0, 1 hoặc 2) để đổi món
         let drinkIndex = Math.min(window.menuCycleIndex, drinkFoods.length - 1);
         let bestDrink = drinkFoods[drinkIndex]; 
         
@@ -810,18 +808,15 @@ function generateAutoMenu() {
         }
     }
 
-    // BƯỚC A: Lấp đầy Protein (Dịch chuyển mảng thức ăn đặc theo cycle index)
-    // - Lần 1 (Index 0): Cắt từ vị trí 0 -> 5
-    // - Lần 2 (Index 1): Cắt từ vị trí 3 -> 8 (Giữ lại 1 ít món cũ, thêm món mới)
-    // - Lần 3 (Index 2): Cắt từ vị trí 6 -> 11 
-    let solidOffset = window.menuCycleIndex * 3; 
-    
-    // Đề phòng trường hợp database quá ít món không đủ để trượt
-    if (solidOffset + 5 > solidFoods.length) {
-        solidOffset = 0; 
+    // BƯỚC A: Lấp đầy Protein (THUẬT TOÁN CHIA BÀI)
+    let topSolidFoods = [];
+    for (let i = 0; i < solidFoods.length; i++) {
+        // Trải đều các món xịn ra 3 Menu (modulo 3)
+        if (i % 3 === window.menuCycleIndex) {
+            topSolidFoods.push(solidFoods[i]);
+        }
+        if (topSolidFoods.length === 5) break; // Chỉ lấy 5 món đại diện
     }
-    
-    let topSolidFoods = solidFoods.slice(solidOffset, solidOffset + 5);
 
     for (let food of topSolidFoods) {
         if (currentSumPro >= targetPro || currentSumCal >= targetCal) break;
@@ -843,10 +838,16 @@ function generateAutoMenu() {
         }
     }
 
-    // BƯỚC B: Bù đắp Calo (Cũng trượt nguồn bù Calo để đỡ nhàm chán)
+    // BƯỚC B: Bù đắp Calo (Cũng dùng thuật toán Chia bài để menu linh hoạt)
     if (currentSumCal < targetCal - 50) { 
-        let highCalOffset = window.menuCycleIndex * 2; // Đổi nguồn Fat/Carb bù calo
-        let highCalSolids = [...solidFoods].sort((a, b) => b.cal - a.cal).slice(highCalOffset);
+        let allHighCalSolids = [...solidFoods].sort((a, b) => b.cal - a.cal);
+        let highCalSolids = [];
+        
+        for (let i = 0; i < allHighCalSolids.length; i++) {
+            if (i % 3 === window.menuCycleIndex) {
+                highCalSolids.push(allHighCalSolids[i]);
+            }
+        }
         
         for (let food of highCalSolids) {
             if (currentSumCal >= targetCal) break;

@@ -734,20 +734,26 @@ function generateAutoMenu() {
         for (let idx in goalWeights) {
             score += (db[key].data[idx] || 0) * goalWeights[idx];
         }
+
+        // BUFF ĐẶC QUYỀN: Nếu mục tiêu là tăng chiều cao, ép Sữa lên top 1 đồ uống
+        let nameLower = db[key].name.toLowerCase();
+        if (goal === 'height' && (nameLower.includes('sữa') || nameLower.includes('milk'))) {
+            score += 10000; // Cộng điểm cực gắt để vượt mặt mọi loại nước khác
+        }
+
         return { 
             key: key, 
             score: score, 
             cal: db[key].data[0], 
             pro: db[key].data[1],
-            // GIẢ ĐỊNH: Trong DB của bạn có thuộc tính isDrink (true/false)
-            // Nếu không có, bạn có thể dùng mẹo check tên: db[key].name.toLowerCase().match(/(nước|sữa|whey|trà|cafe|sinh tố)/)
-            isDrink: db[key].isDrink || false 
+            name: db[key].name,
+            // Regex siêu nhạy: Tự động gom hết nước, trà, cafe, monster, sữa, whey...
+            isDrink: db[key].isDrink || /(nước|sữa|whey|trà|cafe|sinh tố|monster|coffee|tea|juice)/i.test(db[key].name)
         };
     });
 
     foods.sort((a, b) => b.score - a.score);
 
-    // Tách riêng đồ uống và đồ ăn
     let drinkFoods = foods.filter(f => f.isDrink);
     let solidFoods = foods.filter(f => !f.isDrink);
 
@@ -764,13 +770,18 @@ function generateAutoMenu() {
         }
     };
 
-    // BƯỚC 0: ÉP THÊM 1 MÓN NƯỚC VÀO MENU (Slot đầu tiên)
+    // BƯỚC 0: ÉP THÊM 1 MÓN NƯỚC VÀO MENU
     if (drinkFoods.length > 0) {
-        let bestDrink = drinkFoods[0]; // Chọn món nước có điểm hợp mục tiêu nhất
-        let drinkGrams = 250; // Set mặc định 1 ly tiêu chuẩn là 250ml (250g)
+        let bestDrink = drinkFoods[0]; 
+        
+        // KIỂM SOÁT KHỐI LƯỢNG THÔNG MINH
+        // Nếu là bột (Whey/Isolate/Powder) thì 1 muỗng = 30g. Nếu là nước lỏng thì 400ml.
+        let isPowder = /(whey|isolate|powder)/i.test(bestDrink.name);
+        let drinkGrams = isPowder ? 30 : 400; 
 
-        // Kiểm tra xem thêm 1 ly này có làm lố tổng Calo không
         let drinkCal = (bestDrink.cal * drinkGrams) / 100;
+        
+        // Kể cả món có 0 calo (trà, cafe), thuật toán vẫn add vào bình thường
         if (currentSumCal + drinkCal <= targetCal) {
             addPortion(bestDrink.key, drinkGrams);
             currentSumPro += (bestDrink.pro * drinkGrams) / 100;
@@ -778,7 +789,7 @@ function generateAutoMenu() {
         }
     }
 
-    // BƯỚC A: Lấp đầy Protein bằng thực phẩm đặc (Chỉ lấy top 5 vì đã nhường 1 slot cho nước)
+    // BƯỚC A: Lấp đầy Protein bằng thực phẩm đặc
     let topSolidFoods = solidFoods.slice(0, 5);
 
     for (let food of topSolidFoods) {

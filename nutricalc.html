@@ -758,9 +758,13 @@ function generateAutoMenu() {
         }
 
         let nameLower = db[key].name.toLowerCase();
-        if (goal === 'height' && (nameLower.includes('sữa') || nameLower.includes('milk'))) {
-            score += 10000; 
-        }
+        
+        // Phân loại mảng đồ uống cực kỳ chi tiết
+        let isWhey = /(whey|isolate|powder)/i.test(nameLower);
+        let isCaffeine = /(cafe|coffee|trà|tea|monster|redbull|energy|bò húc)/i.test(nameLower);
+        let isMilk = /(sữa|milk)/i.test(nameLower) && !isWhey;
+        
+        let isDrink = db[key].isDrink || isWhey || isCaffeine || isMilk || /(nước|sinh tố|juice)/i.test(nameLower);
 
         return { 
             key: key, 
@@ -768,14 +772,17 @@ function generateAutoMenu() {
             cal: db[key].data[0], 
             pro: db[key].data[1],
             name: db[key].name,
-            isDrink: db[key].isDrink || /(nước|sữa|whey|trà|cafe|sinh tố|monster|coffee|tea|juice)/i.test(db[key].name)
+            isDrink: isDrink,
+            isWhey: isWhey,
+            isCaffeine: isCaffeine,
+            isMilk: isMilk
         };
     });
 
     // Mảng đã sort từ xịn nhất xuống kém nhất
     foods.sort((a, b) => b.score - a.score);
 
-    let drinkFoods = foods.filter(f => f.isDrink);
+    // Tách riêng đồ ăn đặc (Solid) để chạy thuật toán lấp đầy
     let solidFoods = foods.filter(f => !f.isDrink);
 
     let currentSumCal = 0;
@@ -791,27 +798,65 @@ function generateAutoMenu() {
         }
     };
 
-    // BƯỚC 0: ÉP THÊM 1 MÓN NƯỚC (Giữ nguyên)
-    if (drinkFoods.length > 0) {
-        let drinkIndex = Math.min(window.menuCycleIndex, drinkFoods.length - 1);
-        let bestDrink = drinkFoods[drinkIndex]; 
-        
-        let isPowder = /(whey|isolate|powder)/i.test(bestDrink.name);
-        let drinkGrams = isPowder ? 30 : 400; 
+    // ==========================================
+    // BƯỚC 0: ADD ĐỒ UỐNG (SLOT CHUYÊN DỤNG)
+    // ==========================================
 
-        let drinkCal = (bestDrink.cal * drinkGrams) / 100;
+    // Slot 1: BẢO HIỂM WHEY (Luôn luôn 1 scoop ~ 30g)
+    let wheyFoods = foods.filter(f => f.isWhey);
+    if (wheyFoods.length > 0) {
+        let wIdx = window.menuCycleIndex % wheyFoods.length; // Trượt qua các loại Whey để đỡ ngán
+        let bestWhey = wheyFoods[wIdx];
+        let wheyGrams = 30; 
+        let wheyCal = (bestWhey.cal * wheyGrams) / 100;
         
-        if (currentSumCal + drinkCal <= targetCal) {
-            addPortion(bestDrink.key, drinkGrams);
-            currentSumPro += (bestDrink.pro * drinkGrams) / 100;
-            currentSumCal += drinkCal;
+        if (currentSumCal + wheyCal <= targetCal) {
+            addPortion(bestWhey.key, wheyGrams);
+            currentSumPro += (bestWhey.pro * wheyGrams) / 100;
+            currentSumCal += wheyCal;
         }
     }
 
-    // BƯỚC A: Lấp đầy Protein (THUẬT TOÁN CHIA BÀI)
+    // Slot 2: BẢO HIỂM CAFFEINE (Mặc định 1 ly 250ml, nếu Focus/Energy thì x2 thành 500ml)
+    let cafFoods = foods.filter(f => f.isCaffeine);
+    if (cafFoods.length > 0) {
+        let cIdx = window.menuCycleIndex % cafFoods.length;
+        let bestCaf = cafFoods[cIdx];
+        
+        let cafGrams = (goal === 'energy') ? 500 : 250; // Trí não là quất gấp đôi!
+        let cafCal = (bestCaf.cal * cafGrams) / 100;
+        
+        // Vì Caffeine quá ít calo, cho phép lố một chút (du di 50 calo) để luôn được add
+        if (currentSumCal + cafCal <= targetCal + 50) { 
+            addPortion(bestCaf.key, cafGrams);
+            currentSumPro += (bestCaf.pro * cafGrams) / 100;
+            currentSumCal += cafCal;
+        }
+    }
+
+    // Slot 3: BUFF CHIỀU CAO (Chỉ chạy khi goal là Height -> 1 hộp sữa 250ml)
+    if (goal === 'height') {
+        let milkFoods = foods.filter(f => f.isMilk);
+        if (milkFoods.length > 0) {
+            let mIdx = window.menuCycleIndex % milkFoods.length;
+            let bestMilk = milkFoods[mIdx];
+            let milkGrams = 250;
+            let milkCal = (bestMilk.cal * milkGrams) / 100;
+            
+            if (currentSumCal + milkCal <= targetCal) {
+                addPortion(bestMilk.key, milkGrams);
+                currentSumPro += (bestMilk.pro * milkGrams) / 100;
+                currentSumCal += milkCal;
+            }
+        }
+    }
+
+    // ==========================================
+    // BƯỚC A: LẤP ĐẦY PROTEIN (THUẬT TOÁN CHIA BÀI)
+    // ==========================================
     let topSolidFoods = [];
     for (let i = 0; i < solidFoods.length; i++) {
-        // Trải đều các món xịn ra 3 Menu (modulo 3)
+        // Trải đều các món đặc xịn ra 3 Menu (modulo 3)
         if (i % 3 === window.menuCycleIndex) {
             topSolidFoods.push(solidFoods[i]);
         }
@@ -838,7 +883,9 @@ function generateAutoMenu() {
         }
     }
 
-    // BƯỚC B: Bù đắp Calo (Cũng dùng thuật toán Chia bài để menu linh hoạt)
+    // ==========================================
+    // BƯỚC B: BÙ ĐẮP CALO CÒN THIẾU
+    // ==========================================
     if (currentSumCal < targetCal - 50) { 
         let allHighCalSolids = [...solidFoods].sort((a, b) => b.cal - a.cal);
         let highCalSolids = [];

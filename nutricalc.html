@@ -530,7 +530,19 @@ const db = {
             return sum + (db[item.key].data[idx] * item.weight / 100);
         }, 0);
     }
-
+// Hàm tự động tìm top 2 thực phẩm giàu một vi chất cụ thể nhất
+    function getTopFoodsForNutrient(nutrientIdx, limit = 2) {
+        let foodsList = [];
+        for (const [key, value] of Object.entries(db)) {
+            const amount = value.data[nutrientIdx];
+            if (amount > 0) {
+                foodsList.push({ name: value.name, amount: amount });
+            }
+        }
+        // Sắp xếp giảm dần (món nào nhiều chất đó nhất xếp lên đầu)
+        foodsList.sort((a, b) => b.amount - a.amount);
+        return foodsList.slice(0, limit);
+    }
     function updateUI() {
         const listDiv = document.getElementById('selectedList');
         listDiv.innerHTML = '';
@@ -596,7 +608,8 @@ const db = {
                 percentage = Math.min(100, (total / m.target) * 100);
                 if (score >= 9.9) barClass += ' maxed';
                 if (currentMeal.length > 0 && percentage < 50) {
-                    missingList.push({ name: m.name, pct: percentage, msg: healthConsequences[m.name] || 'Ảnh hưởng trao đổi chất.' });
+                    // Thêm idx: m.idx vào object
+                    missingList.push({ idx: m.idx, name: m.name, pct: percentage, msg: healthConsequences[m.name] || 'Ảnh hưởng trao đổi chất.' });
                 }
             }
 
@@ -620,10 +633,23 @@ const db = {
 
         if (currentMeal.length > 0) {
             missingList.sort((a,b) => a.pct - b.pct);
-            // Bỏ .slice(0, 5) để in ra TOÀN BỘ danh sách bị thiếu (< 50%)
+            
             missingList.forEach(item => { 
-                warningsList.push(`<li>🔍 <strong>Thiếu ${item.name} (${item.pct.toFixed(0)}%):</strong> ${item.msg}</li>`);
+                // Gọi hàm tìm món ăn (Lấy top 2 món)
+                const topFoods = getTopFoodsForNutrient(item.idx, 2);
+                let foodSuggestHtml = '';
+                
+                // Nếu tìm thấy món ăn phù hợp trong DB, tạo chuỗi HTML
+                if (topFoods.length > 0) {
+                    const foodNames = topFoods.map(f => f.name).join(', ');
+                    foodSuggestHtml = `<div style="margin-top: 5px; color: var(--success); font-size: 14px;">
+                                        🥘 <b>Nên ăn thêm:</b> ${foodNames}
+                                       </div>`;
+                }
+
+                warningsList.push(`<li>🔍 <strong>Thiếu ${item.name} (${item.pct.toFixed(0)}%):</strong> ${item.msg} ${foodSuggestHtml}</li>`);
             });
+            
             const evalDiv = document.getElementById('evalList');
             if(evalDiv) evalDiv.innerHTML = warningsList.length > 0 ? warningsList.join('') : '<li class="success-text">Tuyệt vời! Khẩu phần hiện tại rất cân bằng.</li>';
         }

@@ -294,29 +294,29 @@
         <div class="panel" id="panelVitFat"></div>
     </div>
 <div class="auto-menu-panel" style="background: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-    <h3>🤖 Trợ Lý Tạo Menu Tự Động</h3>
+    <h3>🤖 Trợ Lý Tạo Menu Tự Động / AI Auto Menu Generator</h3>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px;">
-        <input type="number" id="targetCal" placeholder="Mục tiêu Calo (VD: 2000)" style="padding: 8px; width: 180px;">
-        <input type="number" id="targetPro" placeholder="Mục tiêu Protein (g) (VD: 150)" style="padding: 8px; width: 180px;">
+        <input type="number" id="targetCal" placeholder="Calorie Goal (VD: 2000)" style="padding: 8px; width: 180px;">
+        <input type="number" id="targetPro" placeholder="Protein Goal (g) (VD: 150)" style="padding: 8px; width: 180px;">
         
         <select id="menuGoal" style="padding: 8px;">
-            <option value="muscle">💪 Tăng cơ (Ưu tiên Leucine, BCAA)</option>
-            <option value="strength">🏋️ Sức mạnh & Sức bền (Creatine, Carbs)</option>
-            <option value="energy">🧠 Năng lượng & Trí não (Omega 3, B12, Caffeine)</option>
-            <option value="height">🦴 Tăng chiều cao (Canxi, Vit D, Phốt pho)</option>
+            <option value="muscle">💪 Muscle Building (Leucine, BCAA)</option>
+            <option value="strength">🏋️ Strength & Endurance (Creatine, Carbs)</option>
+            <option value="energy">🧠 Energy & Focus (Omega 3, B12, Caffeine)</option>
+            <option value="height">🦴 Bone Growth (Calcium, Vit D, Phosphorus)</option>
         </select>
         
         <button onclick="generateAutoMenu()" style="padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">
-            ✨ Tạo Menu
+            ✨ Tạo Menu / Generate Menu
         </button>
     </div>
 </div>
-    <div class="panel evaluation-panel" id="panelEvaluation">
-        <h2>⚕️ Báo Cáo Thiếu Hụt & Khuyến Nghị</h2>
-        <ul class="eval-list" id="evalList">
-            <li class="success-text">Hãy thêm thức ăn để hệ thống phân tích dữ liệu.</li>
-        </ul>
-    </div>
+
+<div class="panel evaluation-panel" id="panelEvaluation">
+    <h2>⚕️ Báo Cáo & Khuyến Nghị / Analysis & Recommendations</h2>
+    <ul class="eval-list" id="evalList">
+        <li class="success-text">Hãy thêm thức ăn để hệ thống phân tích dữ liệu. / Please add food to start analysis.</li>
+    </ul>
 </div>
 
 <script>

@@ -245,7 +245,7 @@
             color: #cbd5e1;
                 line-height: 1.6;
         }
-        }
+        
         .eval-list li strong { color: var(--text-main); }
         .eval-list .danger-text strong { color: var(--danger); }
         .eval-list .success-text { color: var(--success); font-weight: bold; text-align: center; padding: 15px;}
@@ -620,8 +620,8 @@ const db = {
 
         if (currentMeal.length > 0) {
             missingList.sort((a,b) => a.pct - b.pct);
-            missingList.slice(0, 5).forEach(item => {
-                // Không thêm cảnh báo thiếu hụt cho những mục Inverse (Càng thấp càng tốt)
+            // Bỏ .slice(0, 5) để in ra TOÀN BỘ danh sách bị thiếu (< 50%)
+            missingList.forEach(item => { 
                 warningsList.push(`<li>🔍 <strong>Thiếu ${item.name} (${item.pct.toFixed(0)}%):</strong> ${item.msg}</li>`);
             });
             const evalDiv = document.getElementById('evalList');

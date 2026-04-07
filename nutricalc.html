@@ -293,7 +293,24 @@
         <div class="panel" id="panelVitWater"></div>
         <div class="panel" id="panelVitFat"></div>
     </div>
-
+<div class="auto-menu-panel" style="background: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+    <h3>🤖 Trợ Lý Tạo Menu Tự Động</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px;">
+        <input type="number" id="targetCal" placeholder="Mục tiêu Calo (VD: 2000)" style="padding: 8px; width: 180px;">
+        <input type="number" id="targetPro" placeholder="Mục tiêu Protein (g) (VD: 150)" style="padding: 8px; width: 180px;">
+        
+        <select id="menuGoal" style="padding: 8px;">
+            <option value="muscle">💪 Tăng cơ (Ưu tiên Leucine, BCAA)</option>
+            <option value="strength">🏋️ Sức mạnh & Sức bền (Creatine, Carbs)</option>
+            <option value="energy">🧠 Năng lượng & Trí não (Omega 3, B12, Caffeine)</option>
+            <option value="height">🦴 Tăng chiều cao (Canxi, Vit D, Phốt pho)</option>
+        </select>
+        
+        <button onclick="generateAutoMenu()" style="padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">
+            ✨ Tạo Menu
+        </button>
+    </div>
+</div>
     <div class="panel evaluation-panel" id="panelEvaluation">
         <h2>⚕️ Báo Cáo Thiếu Hụt & Khuyến Nghị</h2>
         <ul class="eval-list" id="evalList">
@@ -663,6 +680,104 @@ const db = {
     initFoodOptions();
     // Gọi hàm update UI lần đầu để render khung dữ liệu
     updateUI();
+    // Hàm tự động thiết kế menu
+function generateAutoMenu() {
+    const targetCal = parseFloat(document.getElementById('targetCal').value);
+    const targetPro = parseFloat(document.getElementById('targetPro').value);
+    const goal = document.getElementById('menuGoal').value;
+
+    if (!targetCal || !targetPro) {
+        alert('Vui lòng nhập đầy đủ Mục tiêu Calo và Protein!');
+        return;
+    }
+
+    // Xóa menu hiện tại
+    currentMeal = [];
+
+    // 1. Cấu hình trọng số (Weight Scoring) cho từng mục tiêu dựa vào NUTRIENT_INDEX
+    // Điểm số càng cao, thuật toán càng ưu tiên nhặt thực phẩm đó vào menu
+    const goalWeights = {
+        'strength': { 3: 10, 1: 5, 37: 2, 29: 1 }, // Ưu tiên: Creatine (3), Protein (1), Carbs (37), Natri (29)
+        'energy': { 40: 10, 21: 10, 41: 5, 31: 2 }, // Ưu tiên: Omega 3 (40), Vit B12 (21), Caffeine (41), Sắt (31)
+        'height': { 26: 10, 23: 10, 30: 5, 1: 3 },  // Ưu tiên: Canxi (26), Vit D (23), Phốt pho (30), Protein (1)
+        'muscle': { 4: 10, 5: 5, 6: 5, 1: 5 }       // Ưu tiên: Leucine (4), Isoleucine (5), Valine (6), Protein (1)
+    }[goal] || { 1: 1 };
+
+    // 2. Chấm điểm toàn bộ thực phẩm trong DB
+    let foods = Object.keys(db).map(key => {
+        let score = 0;
+        for (let idx in goalWeights) {
+            // Nhân hàm lượng chất (trên 100g) với trọng số mục tiêu
+            score += (db[key].data[idx] || 0) * goalWeights[idx];
+        }
+        return { 
+            key: key, 
+            score: score, 
+            cal: db[key].data[0], 
+            pro: db[key].data[1] 
+        };
+    });
+
+    // 3. Sắp xếp thực phẩm theo điểm từ cao xuống thấp
+    foods.sort((a, b) => b.score - a.score);
+
+    let currentSumCal = 0;
+    let currentSumPro = 0;
+
+    // Lấy top 6 thực phẩm tốt nhất phù hợp với mục tiêu để không làm menu quá lộn xộn
+    let topFoods = foods.slice(0, 6);
+
+    // Hàm tiện ích để thêm/cộng dồn khối lượng món ăn vào currentMeal
+    const addPortion = (foodKey, weight) => {
+        if(weight <= 0) return;
+        let existing = currentMeal.find(i => i.key === foodKey);
+        if (existing) {
+            existing.weight += weight;
+        } else {
+            currentMeal.push({ id: Date.now() + Math.random(), key: foodKey, weight: weight });
+        }
+    };
+
+    // BƯỚC A: Ưu tiên lấp đầy Protein bằng các thực phẩm Top đầu
+    for (let food of topFoods) {
+        if (currentSumPro >= targetPro) break;
+        if (food.pro <= 0) continue; // Bỏ qua thực phẩm không có protein ở bước này
+
+        // Tính khối lượng cần thiết để đạt Target Protein
+        let neededGrams = ((targetPro - currentSumPro) / food.pro) * 100;
+        
+        // Giới hạn ăn tối đa 300g cho 1 món để tránh ngán, và bo tròn bội số 50g cho thực tế
+        let addGrams = Math.min(neededGrams, 300);
+        addGrams = Math.ceil(addGrams / 50) * 50;
+
+        addPortion(food.key, addGrams);
+        currentSumPro += (food.pro * addGrams) / 100;
+        currentSumCal += (food.cal * addGrams) / 100;
+    }
+
+    // BƯỚC B: Nếu vẫn chưa đủ Calo, tìm thực phẩm giàu Calo nhất để bù đắp
+    if (currentSumCal < targetCal) {
+        let highCalFoods = [...foods].sort((a, b) => b.cal - a.cal);
+        
+        for (let food of highCalFoods) {
+            if (currentSumCal >= targetCal) break;
+            if (food.cal <= 0) continue;
+
+            let neededGrams = ((targetCal - currentSumCal) / food.cal) * 100;
+            
+            // Với chất béo/calo cao, giới hạn nạp tối đa 100g, bo tròn bội số 10g
+            let addGrams = Math.min(neededGrams, 100);
+            addGrams = Math.ceil(addGrams / 10) * 10;
+
+            addPortion(food.key, addGrams);
+            currentSumPro += (food.pro * addGrams) / 100;
+            currentSumCal += (food.cal * addGrams) / 100;
+        }
+    }
+
+    // 4. Render lại giao diện và chạy các logic đánh giá của bạn
+    updateUI();
+}
 </script>
 </body>
 </html>

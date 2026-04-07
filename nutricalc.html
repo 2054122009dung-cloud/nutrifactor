@@ -691,23 +691,27 @@ function generateAutoMenu() {
         return;
     }
 
+    // Kiểm tra tính khả thi sinh học cơ bản (1g Protein = 4 kcal)
+    if (targetPro * 4 > targetCal) {
+        alert('Cảnh báo: Lượng Protein yêu cầu lớn hơn tổng Calo cho phép. Không thể thực hiện!');
+        return;
+    }
+
     // Xóa menu hiện tại
     currentMeal = [];
 
-    // 1. Cấu hình trọng số (Weight Scoring) cho từng mục tiêu dựa vào NUTRIENT_INDEX
-    // Điểm số càng cao, thuật toán càng ưu tiên nhặt thực phẩm đó vào menu
+    // 1. Cấu hình trọng số (Weight Scoring)
     const goalWeights = {
-        'strength': { 3: 10, 1: 5, 37: 2, 29: 1 }, // Ưu tiên: Creatine (3), Protein (1), Carbs (37), Natri (29)
-        'energy': { 40: 10, 21: 10, 41: 5, 31: 2 }, // Ưu tiên: Omega 3 (40), Vit B12 (21), Caffeine (41), Sắt (31)
-        'height': { 26: 10, 23: 10, 30: 5, 1: 3 },  // Ưu tiên: Canxi (26), Vit D (23), Phốt pho (30), Protein (1)
-        'muscle': { 4: 10, 5: 5, 6: 5, 1: 5 }       // Ưu tiên: Leucine (4), Isoleucine (5), Valine (6), Protein (1)
+        'strength': { 3: 10, 1: 5, 37: 2, 29: 1 }, 
+        'energy': { 40: 10, 21: 10, 41: 5, 31: 2 }, 
+        'height': { 26: 10, 23: 10, 30: 5, 1: 3 },  
+        'muscle': { 4: 10, 5: 5, 6: 5, 1: 5 }       
     }[goal] || { 1: 1 };
 
-    // 2. Chấm điểm toàn bộ thực phẩm trong DB
+    // 2. Chấm điểm thực phẩm
     let foods = Object.keys(db).map(key => {
         let score = 0;
         for (let idx in goalWeights) {
-            // Nhân hàm lượng chất (trên 100g) với trọng số mục tiêu
             score += (db[key].data[idx] || 0) * goalWeights[idx];
         }
         return { 
@@ -723,11 +727,8 @@ function generateAutoMenu() {
 
     let currentSumCal = 0;
     let currentSumPro = 0;
-
-    // Lấy top 6 thực phẩm tốt nhất phù hợp với mục tiêu để không làm menu quá lộn xộn
     let topFoods = foods.slice(0, 6);
 
-    // Hàm tiện ích để thêm/cộng dồn khối lượng món ăn vào currentMeal
     const addPortion = (foodKey, weight) => {
         if(weight <= 0) return;
         let existing = currentMeal.find(i => i.key === foodKey);
@@ -738,44 +739,56 @@ function generateAutoMenu() {
         }
     };
 
-    // BƯỚC A: Ưu tiên lấp đầy Protein bằng các thực phẩm Top đầu
+    // BƯỚC A: Ưu tiên lấp đầy Protein nhưng CÓ KIỂM SOÁT CALO
     for (let food of topFoods) {
-        if (currentSumPro >= targetPro) break;
-        if (food.pro <= 0) continue; // Bỏ qua thực phẩm không có protein ở bước này
+        // Dừng ngay nếu ĐÃ ĐỦ PROTEIN hoặc ĐÃ CHẠM TRẦN CALO
+        if (currentSumPro >= targetPro || currentSumCal >= targetCal) break;
+        if (food.pro <= 0 || food.cal <= 0) continue; 
 
-        // Tính khối lượng cần thiết để đạt Target Protein
-        let neededGrams = ((targetPro - currentSumPro) / food.pro) * 100;
+        let remainingPro = targetPro - currentSumPro;
+        let remainingCal = targetCal - currentSumCal;
+
+        // Tính số grams tối đa dựa trên 2 điều kiện: Thiếu bao nhiêu Protein và Còn bao nhiêu Calo
+        let gramsForPro = (remainingPro / food.pro) * 100;
+        let gramsForCal = (remainingCal / food.cal) * 100;
         
-        // Giới hạn ăn tối đa 300g cho 1 món để tránh ngán, và bo tròn bội số 50g cho thực tế
-        let addGrams = Math.min(neededGrams, 300);
-        addGrams = Math.ceil(addGrams / 50) * 50;
+        // Lấy con số nhỏ nhất giữa (Nhu cầu Protein, Giới hạn Calo, Giới hạn khẩu phần 300g)
+        let maxGrams = Math.min(gramsForPro, gramsForCal, 300);
 
-        addPortion(food.key, addGrams);
-        currentSumPro += (food.pro * addGrams) / 100;
-        currentSumCal += (food.cal * addGrams) / 100;
-    }
+        // Bo tròn xuống (Math.floor) mức 10g để lấy số đẹp và tuyệt đối không lố calo
+        let addGrams = Math.floor(maxGrams / 10) * 10;
 
-    // BƯỚC B: Nếu vẫn chưa đủ Calo, tìm thực phẩm giàu Calo nhất để bù đắp
-    if (currentSumCal < targetCal) {
-        let highCalFoods = [...foods].sort((a, b) => b.cal - a.cal);
-        
-        for (let food of highCalFoods) {
-            if (currentSumCal >= targetCal) break;
-            if (food.cal <= 0) continue;
-
-            let neededGrams = ((targetCal - currentSumCal) / food.cal) * 100;
-            
-            // Với chất béo/calo cao, giới hạn nạp tối đa 100g, bo tròn bội số 10g
-            let addGrams = Math.min(neededGrams, 100);
-            addGrams = Math.ceil(addGrams / 10) * 10;
-
+        if (addGrams > 0) {
             addPortion(food.key, addGrams);
             currentSumPro += (food.pro * addGrams) / 100;
             currentSumCal += (food.cal * addGrams) / 100;
         }
     }
 
-    // 4. Render lại giao diện và chạy các logic đánh giá của bạn
+    // BƯỚC B: Nếu vẫn chưa đủ Calo, bù đắp bằng thực phẩm giàu Calo
+    if (currentSumCal < targetCal - 50) { // Sai số cho phép 50 Calo
+        let highCalFoods = [...foods].sort((a, b) => b.cal - a.cal);
+        
+        for (let food of highCalFoods) {
+            if (currentSumCal >= targetCal) break;
+            if (food.cal <= 0) continue;
+
+            let remainingCal = targetCal - currentSumCal;
+            let neededGrams = (remainingCal / food.cal) * 100;
+            
+            // Giới hạn thêm tối đa 100g cho thức ăn dặm bù calo
+            let addGrams = Math.min(neededGrams, 100);
+            addGrams = Math.floor(addGrams / 10) * 10;
+
+            if (addGrams > 0) {
+                addPortion(food.key, addGrams);
+                currentSumPro += (food.pro * addGrams) / 100;
+                currentSumCal += (food.cal * addGrams) / 100;
+            }
+        }
+    }
+
+    // 4. Cập nhật UI
     updateUI();
 }
 </script>

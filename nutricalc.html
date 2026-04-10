@@ -385,8 +385,10 @@ function generateAutoMenu() {
 
     currentMeal = [];
 
+    // Bổ sung trọng số cho 'endurance' nếu DB của bạn hỗ trợ
     const goalWeights = {
         'strength': { 3: 10, 1: 5, 37: 2, 29: 1 }, 
+        'endurance': { 3: 10, 40: 10, 1: 5, 41: 5 }, // Ví dụ: Ưu tiên Carb và Năng lượng
         'energy': { 40: 10, 21: 10, 41: 5, 31: 2 }, 
         'height': { 26: 10, 23: 10, 30: 5, 1: 3 },  
         'muscle': { 4: 10, 5: 5, 6: 5, 1: 5 }       
@@ -400,12 +402,17 @@ function generateAutoMenu() {
 
         let nameLower = db[key].name.toLowerCase();
         
-        // Phân loại mảng đồ uống cực kỳ chi tiết
+        // Phân loại mảng đồ uống & supplements cực kỳ chi tiết
         let isWhey = /(whey|isolate|powder)/i.test(nameLower);
-        let isCaffeine = /(cafe|coffee|trà|tea|monster|redbull|energy|bò húc)/i.test(nameLower);
+        let isCaffeine = /(cafe|coffee|trà|tea|monster|redbull|energy|bò húc|pre-workout)/i.test(nameLower);
         let isMilk = /(sữa|milk)/i.test(nameLower) && !isWhey;
+        let isCreatine = /(creatine)/i.test(nameLower);
+        let isVitB = /(vitamin b|b-complex|b12|b6|b1)/i.test(nameLower);
         
-        let isDrink = db[key].isDrink || isWhey || isCaffeine || isMilk || /(nước|sinh tố|juice)/i.test(nameLower);
+        // Phân loại Nguồn Carb Tốt
+        let isHighCarb = /(cơm|gạo|bánh mì|khoai|yến mạch|chuối|oat|pasta|mì|phở|bún)/i.test(nameLower) && !isWhey;
+
+        let isDrink = db[key].isDrink || isWhey || isCaffeine || isMilk || isCreatine || isVitB || /(nước|sinh tố|juice)/i.test(nameLower);
 
         return { 
             key: key, 
@@ -416,7 +423,10 @@ function generateAutoMenu() {
             isDrink: isDrink,
             isWhey: isWhey,
             isCaffeine: isCaffeine,
-            isMilk: isMilk
+            isMilk: isMilk,
+            isCreatine: isCreatine,
+            isVitB: isVitB,
+            isHighCarb: isHighCarb
         };
     });
 
@@ -440,13 +450,13 @@ function generateAutoMenu() {
     };
 
     // ==========================================
-    // BƯỚC 0: ADD ĐỒ UỐNG (SLOT CHUYÊN DỤNG)
+    // BƯỚC 0: ADD ĐỒ UỐNG & SUPPLEMENTS (SLOT CHUYÊN DỤNG)
     // ==========================================
 
     // Slot 1: BẢO HIỂM WHEY (Luôn luôn 1 scoop ~ 30g)
     let wheyFoods = foods.filter(f => f.isWhey);
     if (wheyFoods.length > 0) {
-        let wIdx = window.menuCycleIndex % wheyFoods.length; // Trượt qua các loại Whey để đỡ ngán
+        let wIdx = window.menuCycleIndex % wheyFoods.length;
         let bestWhey = wheyFoods[wIdx];
         let wheyGrams = 30; 
         let wheyCal = (bestWhey.cal * wheyGrams) / 100;
@@ -458,24 +468,52 @@ function generateAutoMenu() {
         }
     }
 
-    // Slot 2: BẢO HIỂM CAFFEINE (Mặc định 1 ly 250ml, nếu Focus/Energy thì x2 thành 500ml)
-    let cafFoods = foods.filter(f => f.isCaffeine);
-    if (cafFoods.length > 0) {
-        let cIdx = window.menuCycleIndex % cafFoods.length;
-        let bestCaf = cafFoods[cIdx];
-        
-        let cafGrams = (goal === 'energy') ? 500 : 250; // Trí não là quất gấp đôi!
-        let cafCal = (bestCaf.cal * cafGrams) / 100;
-        
-        // Vì Caffeine quá ít calo, cho phép lố một chút (du di 50 calo) để luôn được add
-        if (currentSumCal + cafCal <= targetCal + 50) { 
-            addPortion(bestCaf.key, cafGrams);
-            currentSumPro += (bestCaf.pro * cafGrams) / 100;
-            currentSumCal += cafCal;
+    // Slot 2: BẢO HIỂM CREATINE (Dành cho Strength & Endurance - 5g tiêu chuẩn)
+    if (goal === 'strength' || goal === 'endurance') {
+        let creaFoods = foods.filter(f => f.isCreatine);
+        if (creaFoods.length > 0) {
+            let bestCrea = creaFoods[0]; // Creatine thường không cần cycle
+            let creaGrams = 5;
+            let creaCal = (bestCrea.cal * creaGrams) / 100;
+            addPortion(bestCrea.key, creaGrams);
+            currentSumPro += (bestCrea.pro * creaGrams) / 100;
+            currentSumCal += creaCal;
         }
     }
 
-    // Slot 3: BUFF CHIỀU CAO (Chỉ chạy khi goal là Height -> 1 hộp sữa 250ml)
+    // Slot 3: BẢO HIỂM CAFFEINE (Kích thích thần kinh cho Strength/Endurance/Energy)
+    if (['strength', 'endurance', 'energy'].includes(goal)) {
+        let cafFoods = foods.filter(f => f.isCaffeine);
+        if (cafFoods.length > 0) {
+            let cIdx = window.menuCycleIndex % cafFoods.length;
+            let bestCaf = cafFoods[cIdx];
+            
+            // Endurance/Energy cần tỉnh táo lâu dài nên dùng lượng lớn hơn (500ml), Strength dùng liều kích thích nhanh (250ml)
+            let cafGrams = (goal === 'energy' || goal === 'endurance') ? 500 : 250; 
+            let cafCal = (bestCaf.cal * cafGrams) / 100;
+            
+            if (currentSumCal + cafCal <= targetCal + 50) { 
+                addPortion(bestCaf.key, cafGrams);
+                currentSumPro += (bestCaf.pro * cafGrams) / 100;
+                currentSumCal += cafCal;
+            }
+        }
+    }
+
+    // Slot 4: BẢO HIỂM VITAMIN B (Dành cho Endurance & Energy để chuyển hoá năng lượng)
+    if (goal === 'endurance' || goal === 'energy') {
+        let vitBFoods = foods.filter(f => f.isVitB);
+        if (vitBFoods.length > 0) {
+            let bestVitB = vitBFoods[0];
+            let vitBGrams = 5; // Giả sử 1 serving là viên/gói 5g
+            let vitBCal = (bestVitB.cal * vitBGrams) / 100;
+            addPortion(bestVitB.key, vitBGrams);
+            currentSumPro += (bestVitB.pro * vitBGrams) / 100;
+            currentSumCal += vitBCal;
+        }
+    }
+
+    // Slot 5: BẢO HIỂM CHIỀU CAO (Sữa cho mục tiêu Height)
     if (goal === 'height') {
         let milkFoods = foods.filter(f => f.isMilk);
         if (milkFoods.length > 0) {
@@ -493,15 +531,39 @@ function generateAutoMenu() {
     }
 
     // ==========================================
+    // BƯỚC 0.5: FILL NỀN TẢNG CARB CHẤT LƯỢNG CAO (Cho Strength/Endurance)
+    // ==========================================
+    // Nếu là sức mạnh/sức bền, ta buộc phải cắm 1 lượng Carb (Khoai/Cơm/Yến mạch) vào trước khi thuật toán chia bài Protein chạy
+    if (goal === 'strength' || goal === 'endurance') {
+        let carbFoods = solidFoods.filter(f => f.isHighCarb);
+        if (carbFoods.length > 0) {
+            let cbIdx = window.menuCycleIndex % carbFoods.length;
+            let bestCarb = carbFoods[cbIdx];
+            
+            // Fix mặc định 150g - 200g carb nền tảng
+            let carbGrams = 200; 
+            let carbCal = (bestCarb.cal * carbGrams) / 100;
+            
+            if (currentSumCal + carbCal <= targetCal * 0.7) { // Chừa room cho protein
+                addPortion(bestCarb.key, carbGrams);
+                currentSumPro += (bestCarb.pro * carbGrams) / 100;
+                currentSumCal += carbCal;
+            }
+        }
+    }
+
+    // ==========================================
     // BƯỚC A: LẤP ĐẦY PROTEIN (THUẬT TOÁN CHIA BÀI)
     // ==========================================
     let topSolidFoods = [];
-    for (let i = 0; i < solidFoods.length; i++) {
-        // Trải đều các món đặc xịn ra 3 Menu (modulo 3)
+    // Lọc bỏ bớt các nguồn thuần Carb ở Bước A để ưu tiên thịt/cá
+    let proteinFocusedSolids = solidFoods.filter(f => goal === 'strength' || goal === 'endurance' ? !f.isHighCarb : true);
+
+    for (let i = 0; i < proteinFocusedSolids.length; i++) {
         if (i % 3 === window.menuCycleIndex) {
-            topSolidFoods.push(solidFoods[i]);
+            topSolidFoods.push(proteinFocusedSolids[i]);
         }
-        if (topSolidFoods.length === 5) break; // Chỉ lấy 5 món đại diện
+        if (topSolidFoods.length === 5) break; 
     }
 
     for (let food of topSolidFoods) {

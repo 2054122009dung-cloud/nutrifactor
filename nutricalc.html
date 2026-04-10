@@ -267,9 +267,9 @@
         }
 
         const panels = { 
-            panelMacros: '<h2>🍞 Carb & Sugar (Càng thấp càng tốt)</h2>',
-            panelEAA: '<h2>🧬 EAA & Hợp Chất</h2>', 
-            panelMinerals: '<h2>🪨 Khoáng Chất</h2>', 
+            panelMacros: '<h2>🍞 Carb & Sugar </h2>',
+            panelEAA: '<h2>🧬 EAA</h2>', 
+            panelMinerals: '<h2>🪨 Minerals</h2>', 
             panelVitWater: '<h2>💧 Vitamins & Stimulants (Nước)</h2>', 
             panelVitFat: '<h2>🥑 Vitamins & Lipids (Dầu)</h2>' 
         };
@@ -278,7 +278,7 @@
         let missingList = [];
 
         if (tNa > 2000) {
-            warningsList.push(`<li class="danger-text">⚠️ <strong>Thừa Natri (${tNa.toFixed(0)}mg):</strong> Gây tích nước, tăng huyết áp.</li>`);
+            warningsList.push(`<li class="danger-text">⚠️ <strong>Thừa Natri (${tNa.toFixed(0)}mg):</strong>BLOATING!! Gây tích nước, tăng huyết áp.</li>`);
         }
         if (tCaffeine > 400) {
             warningsList.push(`<li class="danger-text">⚠️ <strong>Quá liều Caffeine (${tCaffeine.toFixed(0)}mg):</strong> ${healthConsequences['Caffeine']}</li>`);
